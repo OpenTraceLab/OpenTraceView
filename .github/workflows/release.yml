@@ -1,0 +1,212 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Tag to create/update (e.g. v0.1.0 or draft-<anything>)'
+        default: ""
+      draft:
+        description: 'Create as draft when manually run?'
+        type: boolean
+        default: true
+      prerelease:
+        description: 'Mark as prerelease when manually run?'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+env:
+  APP: OpenTraceView
+
+jobs:
+  preflight:
+    runs-on: ubuntu-22.04
+    steps:
+      - run: |
+          echo "event=${{ github.event_name }}"
+          echo "ref=${{ github.ref }}"
+          echo "branch=${{ github.ref_name }}"
+          echo "tag_input='${{ inputs.tag_name }}'"
+          echo "actor=${{ github.actor }}"
+
+  build-and-upload:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-2022, macos-14]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Linux cache
+      - name: Cache (Linux)
+        if: runner.os == 'Linux'
+        uses: actions/cache@v4
+        with:
+          path: |
+            $HOME/.cache/ccache
+            $HOME/.cache/meson
+          key: linux-${{ hashFiles('**/meson.build','**/meson_options.txt') }}
+          restore-keys: linux-
+
+      # macOS cache
+      - name: Cache (macOS)
+        if: runner.os == 'macOS'
+        uses: actions/cache@v4
+        with:
+          path: |
+            $HOME/.cache/ccache
+            $HOME/.cache/meson
+          key: mac-${{ hashFiles('**/meson.build','**/meson_options.txt') }}
+          restore-keys: mac-
+
+      # Windows cache
+      - name: Cache (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/cache@v4
+        with:
+          path: |
+            C:\Users\runneradmin\.ccache
+            C:\Users\runneradmin\AppData\Local\meson
+          key: win-${{ hashFiles('**/meson.build','**/meson_options.txt') }}
+          restore-keys: win-
+
+      - name: Linux deps
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y meson ninja-build pkg-config gcc g++ ccache \
+            libglib2.0-dev libglibmm-2.4-dev libusb-1.0-0-dev libzip-dev libftdi1-dev libserialport-dev libhidapi-dev libieee1284-3-dev \
+            qt6-base-dev qt6-svg-dev qt6-tools-dev libboost-dev libboost-serialization-dev libboost-system-dev
+          echo "/usr/lib/ccache" >> "$GITHUB_PATH"
+          mkdir -p "$HOME/.cache/ccache" "$HOME/.cache/meson"
+          # Build and install OpenTraceCapture dependency
+          git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
+          cd /tmp/opentracecapture
+          meson setup build --buildtype=release
+          meson compile -C build
+          sudo meson install -C build
+
+      - name: macOS deps
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install meson ninja pkg-config ccache glib glibmm libusb libzip libftdi hidapi libserialport \
+            qt6 boost
+          echo "$(brew --prefix ccache)/libexec" >> "$GITHUB_PATH"
+          echo "XDG_CACHE_HOME=$HOME/.cache"   >> "$GITHUB_ENV"
+          echo "CCACHE_DIR=$HOME/.cache/ccache" >> "$GITHUB_ENV"
+          mkdir -p "$HOME/.cache/ccache" "$HOME/.cache/meson"
+          # Build and install OpenTraceCapture dependency
+          git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
+          cd /tmp/opentracecapture
+          meson setup build --buildtype=release
+          meson compile -C build
+          meson install -C build
+
+      - name: MSYS2 setup (Windows)
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            git
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-meson
+            mingw-w64-x86_64-ninja
+            mingw-w64-x86_64-ccache
+            mingw-w64-x86_64-pkg-config
+            mingw-w64-x86_64-glib2
+            mingw-w64-x86_64-glibmm
+            mingw-w64-x86_64-libzip
+            mingw-w64-x86_64-libusb
+            mingw-w64-x86_64-libftdi
+            mingw-w64-x86_64-libserialport
+            mingw-w64-x86_64-hidapi
+            mingw-w64-x86_64-qt6
+            mingw-w64-x86_64-boost
+
+      - name: Build OpenTraceCapture (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
+          cd /tmp/opentracecapture
+          meson setup build --buildtype=release
+          meson compile -C build
+          meson install -C build
+
+      - name: Compute tag + version
+        id: meta
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "release" ]; then
+            TAG="${{ github.event.release.tag_name }}"
+          else
+            TAG="${{ inputs.tag_name }}"
+            if [ -z "$TAG" ]; then TAG="draft-${GITHUB_RUN_ID}"; fi
+          fi
+          NUMVER="${TAG#v}"
+          echo "tag=$TAG"     >> $GITHUB_OUTPUT
+          echo "numver=$NUMVER" >> $GITHUB_OUTPUT
+          case "${{ runner.os }}" in
+            Linux)   OUT="${{ env.APP }}-${TAG}-linux.tar.gz" ;;
+            macOS)   OUT="${{ env.APP }}-${TAG}-macos.tar.gz" ;;
+            Windows) OUT="${{ env.APP }}-${TAG}-windows.zip" ;;
+          esac
+          echo "outfile=$OUT" >> $GITHUB_OUTPUT
+
+      - name: Build (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          cd opentraceview
+          meson setup build --buildtype=release \
+            -Dversion_override="${{ steps.meta.outputs.numver }}"
+          meson configure build
+          meson compile -C build
+          meson install -C build --destdir "$PWD/pkg"
+
+      - name: Build (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          export CCACHE_DIR=/c/Users/runneradmin/.ccache
+          export XDG_CACHE_HOME=/c/Users/runneradmin/AppData/Local
+          mkdir -p "$CCACHE_DIR"
+          export PATH=/mingw64/lib/ccache:$PATH
+          cd opentraceview
+          meson setup build --buildtype=release \
+            -Dversion_override="${{ steps.meta.outputs.numver }}"
+          meson configure build
+          meson compile -C build
+          meson install -C build --destdir "$PWD/pkg"
+
+      - name: Package (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          cd opentraceview
+          tar -C pkg -czf "../${{ steps.meta.outputs.outfile }}" .
+
+      - name: Package (Windows)
+        if: runner.os == 'Windows'
+        shell: bash
+        run: |
+          cd opentraceview
+          7z a "../${{ steps.meta.outputs.outfile }}" pkg\*
+
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.meta.outputs.outfile }}
+          tag_name: ${{ steps.meta.outputs.tag }}
+          name:     ${{ format('{0} {1}', env.APP, steps.meta.outputs.tag) }}
+          draft:    ${{ github.event_name == 'workflow_dispatch' && inputs.draft || false }}
+          prerelease: ${{ github.event_name == 'workflow_dispatch' && inputs.prerelease || false }}
+          target_commitish: ${{ github.sha }}

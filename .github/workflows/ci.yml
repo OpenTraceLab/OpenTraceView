@@ -1,0 +1,145 @@
+name: CI
+
+on:
+  pull_request:
+    paths:
+      - "opentraceview/**"
+  push:
+    branches: [main]
+    paths:
+      - "opentraceview/**"
+  workflow_dispatch: {}
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-22.04, windows-2022, macos-14]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Linux cache
+      - name: Cache (Linux)
+        if: runner.os == 'Linux'
+        uses: actions/cache@v4
+        with:
+          path: |
+            $HOME/.cache/ccache
+            $HOME/.cache/meson
+          key: linux-${{ hashFiles('**/meson.build','**/meson_options.txt') }}
+          restore-keys: linux-
+
+      # macOS cache
+      - name: Cache (macOS)
+        if: runner.os == 'macOS'
+        uses: actions/cache@v4
+        with:
+          path: |
+            $HOME/.cache/ccache
+            $HOME/.cache/meson
+          key: mac-${{ hashFiles('**/meson.build','**/meson_options.txt') }}
+          restore-keys: mac-
+
+      # Windows cache
+      - name: Cache (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/cache@v4
+        with:
+          path: |
+            C:\Users\runneradmin\.ccache
+            C:\Users\runneradmin\AppData\Local\meson
+          key: win-${{ hashFiles('**/meson.build','**/meson_options.txt') }}
+          restore-keys: win-
+
+      - name: Linux deps
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y meson ninja-build pkg-config gcc g++ ccache \
+            libglib2.0-dev libglibmm-2.4-dev libusb-1.0-0-dev libzip-dev libftdi1-dev libserialport-dev libhidapi-dev libieee1284-3-dev \
+            qt6-base-dev qt6-svg-dev qt6-tools-dev libboost-dev libboost-serialization-dev libboost-system-dev
+          echo "/usr/lib/ccache" >> "$GITHUB_PATH"
+          mkdir -p "$HOME/.cache/ccache" "$HOME/.cache/meson"
+          # Build and install OpenTraceCapture dependency
+          git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
+          cd /tmp/opentracecapture
+          meson setup build --buildtype=release
+          meson compile -C build
+          sudo meson install -C build
+
+      - name: macOS deps
+        if: runner.os == 'macOS'
+        run: |
+          brew update
+          brew install meson ninja pkg-config ccache glib glibmm libusb libzip libftdi hidapi libserialport \
+            qt6 boost
+          echo "$(brew --prefix ccache)/libexec" >> "$GITHUB_PATH"
+          echo "XDG_CACHE_HOME=$HOME/.cache"   >> "$GITHUB_ENV"
+          echo "CCACHE_DIR=$HOME/.cache/ccache" >> "$GITHUB_ENV"
+          mkdir -p "$HOME/.cache/ccache" "$HOME/.cache/meson"
+          # Build and install OpenTraceCapture dependency
+          git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
+          cd /tmp/opentracecapture
+          meson setup build --buildtype=release
+          meson compile -C build
+          meson install -C build
+
+      - name: MSYS2 setup
+        if: runner.os == 'Windows'
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            git
+            mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-meson
+            mingw-w64-x86_64-ninja
+            mingw-w64-x86_64-ccache
+            mingw-w64-x86_64-pkg-config
+            mingw-w64-x86_64-glib2
+            mingw-w64-x86_64-glibmm
+            mingw-w64-x86_64-libusb
+            mingw-w64-x86_64-libzip
+            mingw-w64-x86_64-libftdi
+            mingw-w64-x86_64-libserialport
+            mingw-w64-x86_64-hidapi
+            mingw-w64-x86_64-qt6
+            mingw-w64-x86_64-boost
+
+      - name: Build OpenTraceCapture (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
+          cd /tmp/opentracecapture
+          meson setup build --buildtype=release
+          meson compile -C build
+          meson install -C build
+
+      - name: Build & test (Linux/macOS)
+        if: runner.os != 'Windows'
+        run: |
+          cd opentraceview
+          meson setup build --buildtype=release
+          meson configure build
+          meson compile -C build
+
+      - name: Build & test (Windows)
+        if: runner.os == 'Windows'
+        shell: msys2 {0}
+        run: |
+          export CCACHE_DIR=/c/Users/runneradmin/.ccache
+          export XDG_CACHE_HOME=/c/Users/runneradmin/AppData/Local
+          mkdir -p "$CCACHE_DIR"
+          cd opentraceview
+          meson setup build --buildtype=release
+          meson configure build
+          meson compile -C build
