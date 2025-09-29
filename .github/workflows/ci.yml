@@ -3,11 +3,11 @@ name: CI
 on:
   pull_request:
     paths:
-      - "opentraceview/**"
+      - "**"
   push:
     branches: [main]
     paths:
-      - "opentraceview/**"
+      - "**"
   workflow_dispatch: {}
 
 concurrency:
@@ -64,7 +64,7 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y meson ninja-build pkg-config gcc g++ ccache \
             libglib2.0-dev libglibmm-2.4-dev libusb-1.0-0-dev libzip-dev libftdi1-dev libserialport-dev libhidapi-dev libieee1284-3-dev \
-            qt6-base-dev qt6-svg-dev qt6-tools-dev libboost-dev libboost-serialization-dev libboost-system-dev
+            qt6-base-dev libqt6svg6-dev qt6-tools-dev
           echo "/usr/lib/ccache" >> "$GITHUB_PATH"
           mkdir -p "$HOME/.cache/ccache" "$HOME/.cache/meson"
           # Build and install OpenTraceCapture dependency
@@ -73,13 +73,15 @@ jobs:
           meson setup build --buildtype=release
           meson compile -C build
           sudo meson install -C build
+          sudo ldconfig
+          echo "PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH" >> "$GITHUB_ENV"
 
       - name: macOS deps
         if: runner.os == 'macOS'
         run: |
           brew update
           brew install meson ninja pkg-config ccache glib glibmm libusb libzip libftdi hidapi libserialport \
-            qt6 boost
+            qt6
           echo "$(brew --prefix ccache)/libexec" >> "$GITHUB_PATH"
           echo "XDG_CACHE_HOME=$HOME/.cache"   >> "$GITHUB_ENV"
           echo "CCACHE_DIR=$HOME/.cache/ccache" >> "$GITHUB_ENV"
@@ -112,7 +114,6 @@ jobs:
             mingw-w64-x86_64-libserialport
             mingw-w64-x86_64-hidapi
             mingw-w64-x86_64-qt6
-            mingw-w64-x86_64-boost
 
       - name: Build OpenTraceCapture (Windows)
         if: runner.os == 'Windows'
@@ -127,7 +128,6 @@ jobs:
       - name: Build & test (Linux/macOS)
         if: runner.os != 'Windows'
         run: |
-          cd opentraceview
           meson setup build --buildtype=release
           meson configure build
           meson compile -C build
@@ -139,7 +139,6 @@ jobs:
           export CCACHE_DIR=/c/Users/runneradmin/.ccache
           export XDG_CACHE_HOME=/c/Users/runneradmin/AppData/Local
           mkdir -p "$CCACHE_DIR"
-          cd opentraceview
           meson setup build --buildtype=release
           meson configure build
           meson compile -C build

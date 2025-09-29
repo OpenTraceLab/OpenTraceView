@@ -1,0 +1,13 @@
+#pragma once
+
+#define OTV_PACKAGE_NAME "@PACKAGE_NAME@"
+#define OTV_PACKAGE_VERSION "@PACKAGE_VERSION@"
+#define OTV_PACKAGE_STRING "@PACKAGE_STRING@"
+#define OTV_VERSION_STRING "@PACKAGE_VERSION@"
+#define OTV_BIN_NAME "opentraceview"
+#define OTV_TITLE "OpenTraceView"
+#define OTV_GLIBMM_VERSION "2.66.7"
+
+#mesondefine ENABLE_FLOW
+#mesondefine ENABLE_DECODE
+#mesondefine HAVE_OTD_SESSION_SEND_EOF

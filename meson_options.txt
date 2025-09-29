@@ -1,0 +1,23 @@
+option('disable_werror', type: 'boolean', value: true,
+  description: 'Build without -Werror')
+
+option('enable_signals', type: 'boolean', value: true,
+  description: 'Build with UNIX signals')
+
+option('enable_stacktrace', type: 'boolean', value: false,
+  description: 'Enable stack trace when crashing')
+
+option('enable_decode', type: 'boolean', value: true,
+  description: 'Build with libsigrokdecode')
+
+option('enable_flow', type: 'boolean', value: false,
+  description: 'Build with libsigrokflow')
+
+option('enable_tests', type: 'boolean', value: false,
+  description: 'Enable unit tests')
+
+option('static_pkgdeps_libs', type: 'boolean', value: false,
+  description: 'Statically link to (pkg-config) libraries')
+
+option('enable_ts_update', type: 'boolean', value: false,
+  description: 'Update .ts source files (Qt l10n)')

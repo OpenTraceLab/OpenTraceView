@@ -1,0 +1,89 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128">
+  <defs>
+    <!-- Gradient definitions -->
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e293b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0f172a;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="waveGradient1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="waveGradient2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="waveGradient3" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#06b6d4;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Glow effect -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Main background with rounded corners -->
+  <rect x="0" y="0" width="128" height="128" rx="20" fill="url(#bgGradient)"/>
+  
+  <!-- Oscilloscope screen -->
+  <rect x="16" y="16" width="96" height="96" rx="8" fill="#0f172a" stroke="#374151" stroke-width="1"/>
+  
+  <!-- Grid lines -->
+  <g stroke="#374151" stroke-width="0.5" opacity="0.4">
+    <!-- Horizontal grid lines -->
+    <line x1="16" y1="40" x2="112" y2="40"/>
+    <line x1="16" y1="64" x2="112" y2="64"/>
+    <line x1="16" y1="88" x2="112" y2="88"/>
+    <!-- Vertical grid lines -->
+    <line x1="40" y1="16" x2="40" y2="112"/>
+    <line x1="64" y1="16" x2="64" y2="112"/>
+    <line x1="88" y1="16" x2="88" y2="112"/>
+  </g>
+  
+  <!-- Digital signal waveforms -->
+  <g stroke-width="3" fill="none" filter="url(#glow)">
+    <!-- Signal 1 - Main prominent signal -->
+    <path d="M20,88 L28,88 L28,40 L44,40 L44,88 L60,88 L60,40 L76,40 L76,88 L92,88 L92,40 L108,40" 
+          stroke="url(#waveGradient1)" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Signal 2 - Secondary signal -->
+    <path d="M20,76 L32,76 L32,52 L48,52 L48,76 L64,76 L64,52 L80,52 L80,76 L96,76 L96,52 L108,52" 
+          stroke="url(#waveGradient2)" stroke-width="2.5" opacity="0.8" stroke-linecap="round" stroke-linejoin="round"/>
+    
+    <!-- Signal 3 - Tertiary signal -->
+    <path d="M20,64 L24,64 L24,28 L36,28 L36,64 L52,64 L52,28 L68,28 L68,64 L84,64 L84,28 L100,28 L100,64 L108,64" 
+          stroke="url(#waveGradient3)" stroke-width="2" opacity="0.6" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  
+  <!-- Subtle "OTL" monogram in corner -->
+  <g transform="translate(90, 100)" opacity="0.6">
+    <text x="0" y="0" font-family="Arial, sans-serif" font-size="8" font-weight="600" fill="#06b6d4">OTL</text>
+  </g>
+  
+  <!-- Screen highlight effect -->
+  <rect x="18" y="18" width="20" height="12" fill="url(#waveGradient1)" opacity="0.2" rx="2"/>
+  
+  <!-- Power indicator dot -->
+  <circle cx="104" cy="24" r="2" fill="#10b981" opacity="0.8" filter="url(#glow)"/>
+  
+  <!-- Subtle circuit pattern in corners -->
+  <g stroke="#374151" stroke-width="0.5" opacity="0.3" fill="none">
+    <!-- Top left corner -->
+    <path d="M8,8 L12,8 L14,10 L18,10"/>
+    <circle cx="14" cy="10" r="1" fill="#374151"/>
+    
+    <!-- Bottom right corner -->
+    <path d="M110,120 L114,120 L116,118 L120,118"/>
+    <circle cx="116" cy="118" r="1" fill="#374151"/>
+  </g>
+</svg>
