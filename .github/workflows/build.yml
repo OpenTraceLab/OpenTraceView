@@ -1,9 +1,9 @@
-name: Build PulseView artifacts
+name: Build OpenTraceView artifacts
 
 on:
-  push:                # When the repo itself has a new commit on the master branch
+  push:                # When the repo itself has a new commit on the main branch
     branches:
-      - master
+      - main
     tags:              # When a new tag was created
   workflow_dispatch:   # When the workflow was started manually from github
   pull_request:
@@ -12,6 +12,47 @@ on:
       - synchronize    # When a pull request's branch was updated with a new commit
 
 jobs:
-  call-build-workflow:
-    name: Sigrok artifact builder
-    uses: sigrokproject/sigrok-build/.github/workflows/build.yml@master
+  build:
+    name: Build OpenTraceView
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          build-essential \
+          meson \
+          ninja-build \
+          pkg-config \
+          libglib2.0-dev \
+          libglibmm-2.4-dev \
+          qt6-base-dev \
+          qt6-svg-dev \
+          libboost-serialization-dev \
+          libboost-system-dev
+    
+    - name: Install OpenTrace dependencies
+      run: |
+        # Install OpenTraceCapture
+        git clone https://github.com/OpenTraceLab/OpenTraceCapture.git
+        cd OpenTraceCapture
+        meson setup build --buildtype=release
+        meson compile -C build
+        sudo meson install -C build
+        cd ..
+        
+        # Install OpenTraceDecode  
+        git clone https://github.com/OpenTraceLab/OpenTraceDecode.git
+        cd OpenTraceDecode
+        meson setup build --buildtype=release
+        meson compile -C build
+        sudo meson install -C build
+        cd ..
+    
+    - name: Build OpenTraceView
+      run: |
+        meson setup builddir --buildtype=release
+        meson compile -C builddir
