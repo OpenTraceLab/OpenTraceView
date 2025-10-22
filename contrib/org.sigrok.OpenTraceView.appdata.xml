@@ -14,22 +14,21 @@
       <li>Trace groups support</li>
     </ul>
   </description>
-  <url type="homepage">https://sigrok.org/wiki/OpenTraceView</url>
-  <url type="bugtracker">https://sigrok.org/bugzilla/enter_bug.cgi?format=guided&amp;product=OpenTraceView</url>
-  <url type="faq">https://sigrok.org/wiki/FAQ</url>
+  <url type="homepage">https://github.com/OpenTraceLab/OpenTraceView</url>
+  <url type="bugtracker">https://github.com/OpenTraceLab/OpenTraceView/issues</url>
   <screenshots>
     <screenshot type="default">
       <image>https://sigrok.org/wimg/e/ee/PulseView_I2C_DS1307_Decode.png</image>
     </screenshot>
   </screenshots>
   <provides>
-    <binary>pulseview</binary>
+    <binary>opentraceview</binary>
   </provides>
   <suggests>
     <id>org.sigrok.sigrok-firmware</id>
     <id>org.sigrok.sigrok-firmware-fx2lafw</id>
   </suggests>
-  <launchable type="desktop-id">org.sigrok.PulseView.desktop</launchable>
+  <launchable type="desktop-id">org.sigrok.OpenTraceView.desktop</launchable>
   <mimetypes>
     <mimetype>application/vnd.sigrok.session</mimetype>
   </mimetypes>

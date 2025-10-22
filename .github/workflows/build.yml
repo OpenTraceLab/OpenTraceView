@@ -1,15 +1,15 @@
 name: Build OpenTraceView artifacts
 
 on:
-  push:                # When the repo itself has a new commit on the main branch
+  push:
     branches:
       - main
-    tags:              # When a new tag was created
-  workflow_dispatch:   # When the workflow was started manually from github
+    tags:
+  workflow_dispatch:
   pull_request:
     types:
-      - labeled        # When a pull request received a new label (e.g. "provide_binaries")
-      - synchronize    # When a pull request's branch was updated with a new commit
+      - labeled
+      - synchronize
 
 jobs:
   build:
@@ -32,27 +32,36 @@ jobs:
           qt6-base-dev \
           qt6-svg-dev \
           libboost-serialization-dev \
-          libboost-system-dev
+          libboost-system-dev \
+          libboost-stacktrace-dev
     
-    - name: Install OpenTrace dependencies
+    - name: Install OpenTraceCapture
       run: |
-        # Install OpenTraceCapture
         git clone https://github.com/OpenTraceLab/OpenTraceCapture.git
         cd OpenTraceCapture
         meson setup build --buildtype=release
         meson compile -C build
         sudo meson install -C build
+        sudo ldconfig
         cd ..
         
-        # Install OpenTraceDecode  
+    - name: Install OpenTraceDecode
+      run: |
         git clone https://github.com/OpenTraceLab/OpenTraceDecode.git
         cd OpenTraceDecode
         meson setup build --buildtype=release
         meson compile -C build
         sudo meson install -C build
+        sudo ldconfig
         cd ..
     
     - name: Build OpenTraceView
       run: |
         meson setup builddir --buildtype=release
         meson compile -C builddir
+    
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: opentraceview-linux-x64
+        path: builddir/opentraceview
