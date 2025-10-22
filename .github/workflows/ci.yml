@@ -82,7 +82,7 @@ jobs:
         run: |
           git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
           cd /tmp/opentracecapture
-          meson setup build --buildtype=release -Dbindings_cxx=true
+          CXXFLAGS="-std=c++14" meson setup build --buildtype=release -Dbindings_cxx=true
           meson compile -C build
           sudo meson install -C build
           sudo ldconfig
@@ -113,7 +113,7 @@ jobs:
         run: |
           git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
           cd /tmp/opentracecapture
-          meson setup build --buildtype=release -Dbindings_cxx=true
+          CXXFLAGS="-std=c++14" meson setup build --buildtype=release -Dbindings_cxx=true
           meson compile -C build
           meson install -C build
 
@@ -156,7 +156,7 @@ jobs:
         run: |
           git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
           cd /tmp/opentracecapture
-          meson setup build --buildtype=release -Dbindings_cxx=true
+          CXXFLAGS="-std=c++14" meson setup build --buildtype=release -Dbindings_cxx=true
           meson compile -C build
           meson install -C build
 
