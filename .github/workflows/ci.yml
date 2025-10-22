@@ -101,7 +101,7 @@ jobs:
         run: |
           brew update
           brew install meson ninja pkg-config ccache glib glibmm libusb libzip libftdi \
-            hidapi libserialport qt6 boost
+            hidapi libserialport qt6 boost doxygen
           echo "$(brew --prefix ccache)/libexec" >> "$GITHUB_PATH"
           echo "XDG_CACHE_HOME=$HOME/.cache"   >> "$GITHUB_ENV"
           echo "CCACHE_DIR=$HOME/.cache/ccache" >> "$GITHUB_ENV"
@@ -147,6 +147,7 @@ jobs:
             mingw-w64-x86_64-hidapi
             mingw-w64-x86_64-qt6
             mingw-w64-x86_64-boost
+            mingw-w64-x86_64-doxygen
 
       - name: Build OpenTraceCapture (Windows)
         if: runner.os == 'Windows'
