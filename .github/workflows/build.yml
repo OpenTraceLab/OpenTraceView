@@ -43,7 +43,7 @@ jobs:
       run: |
         git clone https://github.com/OpenTraceLab/OpenTraceCapture.git
         cd OpenTraceCapture
-        meson setup build --buildtype=release
+        meson setup build --buildtype=release -Dbindings_cxx=true
         meson compile -C build
         sudo meson install -C build
         sudo ldconfig
