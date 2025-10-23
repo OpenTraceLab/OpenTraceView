@@ -82,8 +82,8 @@ jobs:
         run: |
           git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
           cd /tmp/opentracecapture
-          # Fix doxygen output path (change 'build/doxygen/xml' to 'doxygen/xml')
-          sed -i 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxygen/xml|g' bindings/cxx/Doxyfile
+          # Fix doxygen output path - meson.build expects 'doxy/xml' not 'build/doxygen/xml'
+          sed -i 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxy/xml|g' bindings/cxx/Doxyfile
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
           meson compile -C build
           sudo meson install -C build
@@ -115,8 +115,8 @@ jobs:
         run: |
           git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
           cd /tmp/opentracecapture
-          # Fix doxygen output path (change 'build/doxygen/xml' to 'doxygen/xml')
-          sed -i '' 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxygen/xml|g' bindings/cxx/Doxyfile
+          # Fix doxygen output path - meson.build expects 'doxy/xml' not 'build/doxygen/xml'
+          sed -i '' 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxy/xml|g' bindings/cxx/Doxyfile
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
           meson compile -C build
           meson install -C build
@@ -160,8 +160,8 @@ jobs:
         run: |
           git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
           cd /tmp/opentracecapture
-          # Fix doxygen output path (change 'build/doxygen/xml' to 'doxygen/xml')
-          sed -i 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxygen/xml|g' bindings/cxx/Doxyfile
+          # Fix doxygen output path - meson.build expects 'doxy/xml' not 'build/doxygen/xml'
+          sed -i 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxy/xml|g' bindings/cxx/Doxyfile
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
           meson compile -C build
           meson install -C build
