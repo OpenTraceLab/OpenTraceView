@@ -57,12 +57,12 @@ if not glibmm_dep.found()
   glibmm_dep = dependency('glibmm-2.68', version: '>=2.68.0')
 endif
 
-# Qt6 dependencies - use CMake for Ubuntu 22.04 compatibility
+# Qt6 dependencies
 qt_deps = [
-  dependency('Qt6Core', method: 'cmake'),
-  dependency('Qt6Gui', method: 'cmake'),
-  dependency('Qt6Widgets', method: 'cmake'),
-  dependency('Qt6Svg', method: 'cmake'),
+  dependency('Qt6Core'),
+  dependency('Qt6Gui'),
+  dependency('Qt6Widgets'),
+  dependency('Qt6Svg'),
 ]
 
 # LinguistTools is optional for translations
