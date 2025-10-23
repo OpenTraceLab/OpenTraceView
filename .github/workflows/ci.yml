@@ -84,6 +84,7 @@ jobs:
           cd /tmp/opentracecapture
           sed -i 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxy/xml|g' bindings/cxx/Doxyfile
           sed -i 's|../../include/opentracecapture/libopentracecapture.h|../include/opentracecapture/libopentracecapture.h|g' bindings/cxx/Doxyfile
+          sed -i 's|include/libopentracecapturecxx/libopentracecapturecxx.hpp|../bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp|g' bindings/cxx/Doxyfile
           sed -i 's|#include <enums.hpp>|#include "enums.hpp"|g' bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp
           sed -i 's|#include <enums.cpp>|#include "enums.cpp"|g' bindings/cxx/classes.cpp
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
@@ -120,6 +121,7 @@ jobs:
           cd /tmp/opentracecapture
           sed -i '' 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxy/xml|g' bindings/cxx/Doxyfile
           sed -i '' 's|../../include/opentracecapture/libopentracecapture.h|../include/opentracecapture/libopentracecapture.h|g' bindings/cxx/Doxyfile
+          sed -i '' 's|include/libopentracecapturecxx/libopentracecapturecxx.hpp|../bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp|g' bindings/cxx/Doxyfile
           sed -i '' 's|#include <enums.hpp>|#include "enums.hpp"|g' bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp
           sed -i '' 's|#include <enums.cpp>|#include "enums.cpp"|g' bindings/cxx/classes.cpp
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
@@ -168,6 +170,7 @@ jobs:
           cd /tmp/opentracecapture
           sed -i 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxy/xml|g' bindings/cxx/Doxyfile
           sed -i 's|../../include/opentracecapture/libopentracecapture.h|../include/opentracecapture/libopentracecapture.h|g' bindings/cxx/Doxyfile
+          sed -i 's|include/libopentracecapturecxx/libopentracecapturecxx.hpp|../bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp|g' bindings/cxx/Doxyfile
           sed -i 's|#include <enums.hpp>|#include "enums.hpp"|g' bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp
           sed -i 's|#include <enums.cpp>|#include "enums.cpp"|g' bindings/cxx/classes.cpp
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
