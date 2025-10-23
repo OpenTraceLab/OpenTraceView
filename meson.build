@@ -82,7 +82,12 @@ if enable_flow
 endif
 
 if enable_decode
-  deps += dependency('opentracedecode', version: '>=0.1.0')
+  # Work around opentracedecode.pc requiring 'python' which doesn't exist on Ubuntu
+  opentracedecode_dep = dependency('opentracedecode', version: '>=0.1.0', required: false)
+  if not opentracedecode_dep.found()
+    opentracedecode_dep = compiler.find_library('opentracedecode', required: true)
+  endif
+  deps += opentracedecode_dep
 endif
 
 if host_machine.system() == 'android'
@@ -158,7 +163,7 @@ int main(int argc, char *argv[]) {
   (void)argc; (void)argv;
   return otd_session_send_eof(NULL);
 }
-''', dependencies: dependency('opentracedecode'), name: 'otd_session_send_eof')
+''', dependencies: opentracedecode_dep, name: 'otd_session_send_eof')
   conf_data.set('HAVE_OTD_SESSION_SEND_EOF', has_otd_session_send_eof)
 endif
 
