@@ -57,12 +57,23 @@ if not glibmm_dep.found()
   glibmm_dep = dependency('glibmm-2.68', version: '>=2.68.0')
 endif
 
-# Qt6 dependencies - work around meson 0.61.2 detection issues
-qt6_core = dependency('Qt6Core')
-qt6_gui = compiler.find_library('Qt6Gui', required: true)
-qt6_widgets = compiler.find_library('Qt6Widgets', required: true)
-qt6_svg = compiler.find_library('Qt6Svg', required: true)
-qt_deps = [qt6_core, qt6_gui, qt6_widgets, qt6_svg]
+# Qt6 dependencies
+qt_deps = [
+  dependency('Qt6Core'),
+  dependency('Qt6Gui'),
+  dependency('Qt6Widgets'),
+  dependency('Qt6Svg'),
+]
+
+# Build moc include args from Qt dependencies
+moc_include_args = []
+foreach dep : qt_deps
+  foreach inc : dep.get_variable('includedir', default_value: '').split(';')
+    if inc != ''
+      moc_include_args += ['-I' + inc]
+    endif
+  endforeach
+endforeach
 
 # LinguistTools is optional for translations
 linguist_dep = dependency('qt6', modules: 'LinguistTools', required: false)
@@ -389,21 +400,21 @@ qt6_moc_tool = find_program('/usr/lib/qt6/libexec/moc', required: true)
 data_mathsignal_moc = custom_target('data_mathsignal_moc',
   input: files('otv/data/mathsignal.hpp'),
   output: 'moc_data_mathsignal.cpp',
-  command: [qt6_moc_tool, '@INPUT@', '-o', '@OUTPUT@']
+  command: [qt6_moc_tool, moc_include_args, '@INPUT@', '-o', '@OUTPUT@']
 )
 
 # Views mathsignal  
 views_mathsignal_moc = custom_target('views_mathsignal_moc',
   input: files('otv/views/trace/mathsignal.hpp'),
   output: 'moc_views_mathsignal.cpp',
-  command: [qt6_moc_tool, '@INPUT@', '-o', '@OUTPUT@']
+  command: [qt6_moc_tool, moc_include_args, '@INPUT@', '-o', '@OUTPUT@']
 )
 
 # Views trace view
 views_trace_view_moc = custom_target('views_trace_view_moc',
   input: files('otv/views/trace/view.hpp'),
   output: 'moc_views_trace_view.cpp',
-  command: [qt6_moc_tool, '@INPUT@', '-o', '@OUTPUT@']
+  command: [qt6_moc_tool, moc_include_args, '@INPUT@', '-o', '@OUTPUT@']
 )
 
 processed_files += [data_mathsignal_moc, views_mathsignal_moc, views_trace_view_moc]
@@ -416,7 +427,7 @@ if enable_decode
   decoder_binary_view_moc = custom_target('decoder_binary_view_moc',
     input: files('otv/views/decoder_binary/view.hpp'),
     output: 'moc_decoder_binary_view.cpp',
-    command: [qt6_moc_tool, '@INPUT@', '-o', '@OUTPUT@']
+    command: [qt6_moc_tool, moc_include_args, '@INPUT@', '-o', '@OUTPUT@']
   )
   decode_moc_files += decoder_binary_view_moc
   
@@ -424,7 +435,7 @@ if enable_decode
   tabular_decoder_view_moc = custom_target('tabular_decoder_view_moc',
     input: files('otv/views/tabular_decoder/view.hpp'),
     output: 'moc_tabular_decoder_view.cpp',
-    command: [qt6_moc_tool, '@INPUT@', '-o', '@OUTPUT@']
+    command: [qt6_moc_tool, moc_include_args, '@INPUT@', '-o', '@OUTPUT@']
   )
   decode_moc_files += tabular_decoder_view_moc
   
@@ -445,13 +456,13 @@ if enable_decode
   binding_decoder_moc = custom_target('binding_decoder_moc',
     input: files('otv/binding/decoder.hpp'),
     output: 'moc_binding_decoder.cpp',
-    command: [qt6_moc_tool, '@INPUT@', '-o', '@OUTPUT@']
+    command: [qt6_moc_tool, moc_include_args, '@INPUT@', '-o', '@OUTPUT@']
   )
   
   data_decode_decoder_moc = custom_target('data_decode_decoder_moc',
     input: files('otv/data/decode/decoder.hpp'),
     output: 'moc_data_decode_decoder.cpp',
-    command: [qt6_moc_tool, '@INPUT@', '-o', '@OUTPUT@']
+    command: [qt6_moc_tool, moc_include_args, '@INPUT@', '-o', '@OUTPUT@']
   )
   
   processed_files += decode_processed + decode_moc_files + [binding_decoder_moc, data_decode_decoder_moc]
