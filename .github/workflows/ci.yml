@@ -31,6 +31,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Get latest OpenTraceCapture release
+        id: otc-release
+        run: |
+          LATEST_TAG=$(curl -s https://api.github.com/repos/OpenTraceLab/OpenTraceCapture/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+          echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "Using OpenTraceCapture $LATEST_TAG"
+
       # Linux cache
       - name: Cache (Linux)
         if: runner.os == 'Linux'
@@ -81,7 +88,7 @@ jobs:
       - name: Install OpenTraceCapture (Linux)
         if: runner.os == 'Linux'
         run: |
-          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/v0.1.2-alpha.5/opentracecapture-linux.tar.gz
+          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/${{ steps.otc-release.outputs.tag }}/opentracecapture-linux.tar.gz
           sudo tar xzf opentracecapture-linux.tar.gz -C /usr
           sudo ldconfig
 
@@ -109,7 +116,7 @@ jobs:
       - name: Install OpenTraceCapture (macOS)
         if: runner.os == 'macOS'
         run: |
-          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/v0.1.2-alpha.5/opentracecapture-macos.tar.gz
+          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/${{ steps.otc-release.outputs.tag }}/opentracecapture-macos.tar.gz
           sudo tar xzf opentracecapture-macos.tar.gz -C /usr/local
 
       - name: Build OpenTraceDecode (macOS)
@@ -149,7 +156,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/v0.1.2-alpha.5/opentracecapture-windows.tar.gz
+          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/${{ steps.otc-release.outputs.tag }}/opentracecapture-windows.tar.gz
           tar xzf opentracecapture-windows.tar.gz -C /mingw64
 
       - name: Build OpenTraceDecode (Windows)
