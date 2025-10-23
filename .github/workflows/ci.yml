@@ -77,15 +77,11 @@ jobs:
           echo "/usr/lib/ccache" >> "$GITHUB_PATH"
           mkdir -p "$HOME/.cache/ccache" "$HOME/.cache/meson"
 
-      - name: Build OpenTraceCapture (Linux)
+      - name: Install OpenTraceCapture (Linux)
         if: runner.os == 'Linux'
         run: |
-          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/archive/refs/tags/v0.1.2-alpha.1.tar.gz
-          tar xzf v0.1.2-alpha.1.tar.gz
-          cd OpenTraceCapture-0.1.2-alpha.1
-          CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
-          meson compile -C build
-          sudo meson install -C build
+          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/v0.1.2-alpha.4/opentracecapture-linux.tar.gz
+          sudo tar xzf opentracecapture-linux.tar.gz -C /
           sudo ldconfig
 
       - name: Build OpenTraceDecode (Linux)
@@ -109,15 +105,11 @@ jobs:
           echo "CCACHE_DIR=$HOME/.cache/ccache" >> "$GITHUB_ENV"
           mkdir -p "$HOME/.cache/ccache" "$HOME/.cache/meson"
 
-      - name: Build OpenTraceCapture (macOS)
+      - name: Install OpenTraceCapture (macOS)
         if: runner.os == 'macOS'
         run: |
-          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/archive/refs/tags/v0.1.2-alpha.1.tar.gz
-          tar xzf v0.1.2-alpha.1.tar.gz
-          cd OpenTraceCapture-0.1.2-alpha.1
-          CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
-          meson compile -C build
-          meson install -C build
+          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/v0.1.2-alpha.4/opentracecapture-macos.tar.gz
+          sudo tar xzf opentracecapture-macos.tar.gz -C /
 
       - name: Build OpenTraceDecode (macOS)
         if: runner.os == 'macOS'
@@ -152,16 +144,12 @@ jobs:
             mingw-w64-x86_64-boost
             mingw-w64-x86_64-doxygen
 
-      - name: Build OpenTraceCapture (Windows)
+      - name: Install OpenTraceCapture (Windows)
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/archive/refs/tags/v0.1.2-alpha.1.tar.gz
-          tar xzf v0.1.2-alpha.1.tar.gz
-          cd OpenTraceCapture-0.1.2-alpha.1
-          CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
-          meson compile -C build
-          meson install -C build
+          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/v0.1.2-alpha.4/opentracecapture-windows.tar.gz
+          tar xzf opentracecapture-windows.tar.gz -C /
 
       - name: Build OpenTraceDecode (Windows)
         if: runner.os == 'Windows'
