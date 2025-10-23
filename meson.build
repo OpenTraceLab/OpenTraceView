@@ -57,9 +57,13 @@ if not glibmm_dep.found()
   glibmm_dep = dependency('glibmm-2.68', version: '>=2.68.0')
 endif
 
-# Qt6 dependencies - use super-package with modules for better compatibility
-qt6_dep = dependency('qt6', modules: ['Core', 'Gui', 'Widgets', 'Svg'])
-qt_deps = [qt6_dep]
+# Qt6 dependencies
+qt_deps = [
+  dependency('Qt6Core'),
+  dependency('Qt6Gui'),
+  dependency('Qt6Widgets'),
+  dependency('Qt6Svg'),
+]
 
 # LinguistTools is optional for translations
 linguist_dep = dependency('qt6', modules: 'LinguistTools', required: false)
