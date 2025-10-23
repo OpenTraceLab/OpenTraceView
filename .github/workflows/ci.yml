@@ -48,6 +48,23 @@ jobs:
             core.setOutput('tag', latestTag);
             core.info(`Using OpenTraceCapture ${latestTag}`);
 
+      - name: Get latest OpenTraceDecode release
+        id: otd-release
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const releases = await github.rest.repos.listReleases({
+              owner: 'OpenTraceLab',
+              repo: 'OpenTraceDecode'
+            });
+            // Sort by created_at descending to get most recent
+            const sortedReleases = releases.data.sort((a, b) => 
+              new Date(b.created_at) - new Date(a.created_at)
+            );
+            const latestTag = sortedReleases[0].tag_name;
+            core.setOutput('tag', latestTag);
+            core.info(`Using OpenTraceDecode ${latestTag}`);
+
       # Linux cache
       - name: Cache (Linux)
         if: runner.os == 'Linux'
@@ -108,7 +125,7 @@ jobs:
       - name: Install OpenTraceDecode (Linux)
         if: runner.os == 'Linux'
         run: |
-          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/v0.1.0-alpha.2/opentracedecode-linux.tar.gz
+          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/${{ steps.otd-release.outputs.tag }}/opentracedecode-linux.tar.gz
           sudo tar xzf opentracedecode-linux.tar.gz -C /usr
           sudo ldconfig
 
@@ -132,7 +149,7 @@ jobs:
       - name: Install OpenTraceDecode (macOS)
         if: runner.os == 'macOS'
         run: |
-          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/v0.1.0-alpha.2/opentracedecode-macos.tar.gz
+          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/${{ steps.otd-release.outputs.tag }}/opentracedecode-macos.tar.gz
           sudo tar xzf opentracedecode-macos.tar.gz -C /usr/local
 
       - name: MSYS2 setup
@@ -170,7 +187,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/v0.1.0-alpha.2/opentracedecode-windows.tar.gz
+          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/${{ steps.otd-release.outputs.tag }}/opentracedecode-windows.tar.gz
           tar xzf opentracedecode-windows.tar.gz -C /mingw64
 
       - name: Build & test (Linux/macOS)
