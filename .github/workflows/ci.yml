@@ -153,7 +153,7 @@ jobs:
         run: |
           wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/v0.1.2-alpha.4/opentracecapture-windows.tar.gz
           tar xzf opentracecapture-windows.tar.gz
-          cp -r mingw64/* /mingw64/
+          cp -r a/_temp/msys64/mingw64/* /mingw64/
 
       - name: Build OpenTraceDecode (Windows)
         if: runner.os == 'Windows'
