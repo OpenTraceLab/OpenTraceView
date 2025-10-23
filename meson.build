@@ -58,15 +58,10 @@ if not glibmm_dep.found()
 endif
 
 # Qt6 dependencies
-qt_modules = ['Core', 'Gui', 'Widgets', 'Svg']
-qt_deps = []
-foreach module : qt_modules
-  dep = dependency('Qt6' + module, method: 'cmake', required: false)
-  if not dep.found()
-    dep = dependency('qt6', modules: module)
-  endif
-  qt_deps += dep
-endforeach
+qt6 = import('qt6')
+qt_deps = [
+  dependency('qt6', modules: ['Core', 'Gui', 'Widgets', 'Svg'])
+]
 
 # LinguistTools is optional for translations
 linguist_dep = dependency('qt6', modules: 'LinguistTools', required: false)
