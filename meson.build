@@ -57,13 +57,12 @@ if not glibmm_dep.found()
   glibmm_dep = dependency('glibmm-2.68', version: '>=2.68.0')
 endif
 
-# Qt6 dependencies
-qt_deps = [
-  dependency('Qt6Core'),
-  dependency('Qt6Gui'),
-  dependency('Qt6Widgets'),
-  dependency('Qt6Svg'),
-]
+# Qt6 dependencies - work around meson 0.61.2 detection issues
+qt6_core = dependency('Qt6Core')
+qt6_gui = compiler.find_library('Qt6Gui', required: true)
+qt6_widgets = compiler.find_library('Qt6Widgets', required: true)
+qt6_svg = compiler.find_library('Qt6Svg', required: true)
+qt_deps = [qt6_core, qt6_gui, qt6_widgets, qt6_svg]
 
 # LinguistTools is optional for translations
 linguist_dep = dependency('qt6', modules: 'LinguistTools', required: false)
