@@ -82,6 +82,8 @@ jobs:
         run: |
           git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
           cd /tmp/opentracecapture
+          # Fix doxygen output path (remove duplicate 'build/')
+          sed -i 's|$(BUILDDIR)/build/doxygen|$(BUILDDIR)/doxygen|g' bindings/cxx/Doxyfile
           CXXFLAGS="-std=c++14" meson setup build --buildtype=release -Dbindings_cxx=true
           meson compile -C build
           sudo meson install -C build
@@ -113,6 +115,8 @@ jobs:
         run: |
           git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
           cd /tmp/opentracecapture
+          # Fix doxygen output path (remove duplicate 'build/')
+          sed -i '' 's|$(BUILDDIR)/build/doxygen|$(BUILDDIR)/doxygen|g' bindings/cxx/Doxyfile
           CXXFLAGS="-std=c++14" meson setup build --buildtype=release -Dbindings_cxx=true
           meson compile -C build
           meson install -C build
@@ -156,6 +160,8 @@ jobs:
         run: |
           git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
           cd /tmp/opentracecapture
+          # Fix doxygen output path (remove duplicate 'build/')
+          sed -i 's|$(BUILDDIR)/build/doxygen|$(BUILDDIR)/doxygen|g' bindings/cxx/Doxyfile
           CXXFLAGS="-std=c++14" meson setup build --buildtype=release -Dbindings_cxx=true
           meson compile -C build
           meson install -C build
