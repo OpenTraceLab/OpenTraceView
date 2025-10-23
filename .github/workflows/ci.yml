@@ -89,6 +89,7 @@ jobs:
             libglib2.0-dev libglibmm-2.4-dev libusb-1.0-0-dev libzip-dev libftdi1-dev \
             libserialport-dev libhidapi-dev libieee1284-3-dev \
             qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-tools-dev \
+            libgl-dev libglu1-mesa-dev \
             libboost-serialization-dev libboost-system-dev libboost-stacktrace-dev \
             doxygen
           pip3 install --user meson
