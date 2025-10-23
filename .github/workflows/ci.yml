@@ -84,8 +84,8 @@ jobs:
           cd /tmp/opentracecapture
           sed -i 's|#include <enums.hpp>|#include "enums.hpp"|g' bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp
           sed -i 's|#include <enums.cpp>|#include "enums.cpp"|g' bindings/cxx/classes.cpp
+          mkdir -p bindings/cxx/build/doxygen/xml
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
-          mkdir -p build/doxygen/xml
           meson compile -C build
           sudo meson install -C build
           sudo ldconfig
@@ -118,8 +118,8 @@ jobs:
           cd /tmp/opentracecapture
           sed -i '' 's|#include <enums.hpp>|#include "enums.hpp"|g' bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp
           sed -i '' 's|#include <enums.cpp>|#include "enums.cpp"|g' bindings/cxx/classes.cpp
+          mkdir -p bindings/cxx/build/doxygen/xml
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
-          mkdir -p build/doxygen/xml
           meson compile -C build
           meson install -C build
 
@@ -164,8 +164,8 @@ jobs:
           cd /tmp/opentracecapture
           sed -i 's|#include <enums.hpp>|#include "enums.hpp"|g' bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp
           sed -i 's|#include <enums.cpp>|#include "enums.cpp"|g' bindings/cxx/classes.cpp
+          mkdir -p bindings/cxx/build/doxygen/xml
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
-          mkdir -p build/doxygen/xml
           meson compile -C build
           meson install -C build
 
