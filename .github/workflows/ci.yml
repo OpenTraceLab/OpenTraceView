@@ -75,6 +75,7 @@ jobs:
             libboost-serialization-dev libboost-system-dev libboost-stacktrace-dev \
             doxygen
           echo "/usr/lib/ccache" >> "$GITHUB_PATH"
+          echo "PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH" >> "$GITHUB_ENV"
           mkdir -p "$HOME/.cache/ccache" "$HOME/.cache/meson"
 
       - name: Install OpenTraceCapture (Linux)
