@@ -21,7 +21,9 @@
 
 #if 0
 
-#include <libsigrokdecode/libsigrokdecode.h> /* First, so we avoid a _POSIX_C_SOURCE warning. */
+extern "C" {
+#include <opentracedecode/opentracedecode.h>
+} /* First, so we avoid a _POSIX_C_SOURCE warning. */
 #include <boost/test/unit_test.hpp>
 
 #include <libopentracecapturecxx.hpp>

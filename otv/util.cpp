@@ -23,6 +23,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <iomanip>
 #include <sstream>
 
 #include <QDebug>

@@ -22,7 +22,9 @@
 
 #include "subwindow.hpp"
 
-#include <libsigrokdecode/libsigrokdecode.h>
+extern "C" {
+#include <opentracedecode/opentracedecode.h>
+}
 
 #define DECODERS_HAVE_TAGS \
 	((OTD_PACKAGE_VERSION_MAJOR > 0) || \

@@ -28,7 +28,9 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 
-#include <libsigrokdecode/libsigrokdecode.h>
+extern "C" {
+#include <opentracedecode/opentracedecode.h>
+}
 
 #include "view.hpp"
 #include "QHexView.hpp"

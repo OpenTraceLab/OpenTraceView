@@ -19,7 +19,9 @@
  */
 
 #ifdef ENABLE_DECODE
-#include <libsigrokdecode/libsigrokdecode.h>
+extern "C" {
+#include <opentracedecode/opentracedecode.h>
+}
 #endif
 
 #include <libopentracecapturecxx.hpp>

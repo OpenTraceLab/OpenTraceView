@@ -18,7 +18,9 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <libsigrokdecode/libsigrokdecode.h>
+extern "C" {
+#include <opentracedecode/opentracedecode.h>
+}
 
 #include <limits>
 #include <mutex>

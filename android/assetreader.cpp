@@ -26,7 +26,7 @@
 #include <QtCore/QFile>
 #include <QtCore/QStandardPaths>
 
-#include <libsigrok/libsigrok.h>
+#include <opentracecapture/opentracecapture.h>
 
 using namespace otv;
 

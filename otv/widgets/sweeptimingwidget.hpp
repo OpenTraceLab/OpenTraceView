@@ -20,7 +20,7 @@
 #ifndef PULSEVIEW_OTV_WIDGETS_SWEEPTIMINGWIDGET_HPP
 #define PULSEVIEW_OTV_WIDGETS_SWEEPTIMINGWIDGET_HPP
 
-#include <libsigrok/libsigrok.h>
+#include <opentracecapture/opentracecapture.h>
 
 #include <QComboBox>
 #include <QDoubleSpinBox>

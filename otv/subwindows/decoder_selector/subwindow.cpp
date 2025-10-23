@@ -33,7 +33,9 @@
 #include "otv/session.hpp"
 #include "otv/subwindows/decoder_selector/subwindow.hpp"
 
-#include <libsigrokdecode/libsigrokdecode.h>
+extern "C" {
+#include <opentracedecode/opentracedecode.h>
+}
 #include "subwindow.hpp"  // Required only for lupdate since above include isn't recognized
 
 #define DECODERS_HAVE_TAGS \

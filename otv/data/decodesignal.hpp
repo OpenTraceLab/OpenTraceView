@@ -29,7 +29,9 @@
 #include <QDebug>
 #include <QSettings>
 
-#include <libsigrokdecode/libsigrokdecode.h>
+extern "C" {
+#include <opentracedecode/opentracedecode.h>
+}
 
 #include <otv/data/decode/decoder.hpp>
 #include <otv/data/decode/row.hpp>

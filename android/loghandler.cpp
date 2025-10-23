@@ -20,13 +20,15 @@
  */
 
 #ifdef ENABLE_DECODE
-#include <libsigrokdecode/libsigrokdecode.h> /* First, so we avoid a _POSIX_C_SOURCE warning. */
+extern "C" {
+#include <opentracedecode/opentracedecode.h>
+} /* First, so we avoid a _POSIX_C_SOURCE warning. */
 #endif
 
 #include <android/log.h>
 
 #include <cstdint>
-#include <libsigrok/libsigrok.h>
+#include <opentracecapture/opentracecapture.h>
 
 #include "android/loghandler.hpp"
 

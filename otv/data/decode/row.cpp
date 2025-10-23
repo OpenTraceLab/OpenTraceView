@@ -24,7 +24,9 @@
 #include "decoder.hpp"
 #include "row.hpp"
 
-#include <libsigrokdecode/libsigrokdecode.h>
+extern "C" {
+#include <opentracedecode/opentracedecode.h>
+}
 
 namespace otv {
 namespace data {

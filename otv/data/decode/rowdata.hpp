@@ -27,7 +27,9 @@
 #include <QHash>
 #include <QString>
 
-#include <libsigrokdecode/libsigrokdecode.h>
+extern "C" {
+#include <opentracedecode/opentracedecode.h>
+}
 
 #include <otv/data/decode/annotation.hpp>
 

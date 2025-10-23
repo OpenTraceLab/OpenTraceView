@@ -23,7 +23,9 @@
 #include <QDebug>
 
 #include <libopentracecapturecxx.hpp>
-#include <libsigrokdecode/libsigrokdecode.h>
+extern "C" {
+#include <opentracedecode/opentracedecode.h>
+}
 
 #include "decoder.hpp"
 
