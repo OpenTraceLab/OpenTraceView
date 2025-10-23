@@ -80,14 +80,9 @@ jobs:
       - name: Build OpenTraceCapture (Linux)
         if: runner.os == 'Linux'
         run: |
-          git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
-          cd /tmp/opentracecapture
-          sed -i 's|#include <enums.hpp>|#include "enums.hpp"|g' bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp
-          sed -i 's|#include <enums.cpp>|#include "enums.cpp"|g' bindings/cxx/classes.cpp
-          sed -i 's|^XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = bindings/cxx/doxy/xml|g' bindings/cxx/Doxyfile
-          sed -i 's|INPUT                  = ../../include/opentracecapture/libopentracecapture.h|INPUT                  = $(SRCDIR)../../include/opentracecapture/libopentracecapture.h|g' bindings/cxx/Doxyfile
-          sed -i 's|                         include/libopentracecapturecxx/libopentracecapturecxx.hpp|                         $(SRCDIR)include/libopentracecapturecxx/libopentracecapturecxx.hpp|g' bindings/cxx/Doxyfile
-          mkdir -p build/bindings/cxx/doxy/xml
+          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/archive/refs/tags/v0.1.2-alpha.1.tar.gz
+          tar xzf v0.1.2-alpha.1.tar.gz
+          cd OpenTraceCapture-0.1.2-alpha.1
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
           meson compile -C build
           sudo meson install -C build
@@ -117,14 +112,9 @@ jobs:
       - name: Build OpenTraceCapture (macOS)
         if: runner.os == 'macOS'
         run: |
-          git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
-          cd /tmp/opentracecapture
-          sed -i '' 's|#include <enums.hpp>|#include "enums.hpp"|g' bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp
-          sed -i '' 's|#include <enums.cpp>|#include "enums.cpp"|g' bindings/cxx/classes.cpp
-          sed -i '' 's|^XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = bindings/cxx/doxy/xml|g' bindings/cxx/Doxyfile
-          sed -i '' 's|INPUT                  = ../../include/opentracecapture/libopentracecapture.h|INPUT                  = $(SRCDIR)../../include/opentracecapture/libopentracecapture.h|g' bindings/cxx/Doxyfile
-          sed -i '' 's|                         include/libopentracecapturecxx/libopentracecapturecxx.hpp|                         $(SRCDIR)include/libopentracecapturecxx/libopentracecapturecxx.hpp|g' bindings/cxx/Doxyfile
-          mkdir -p build/bindings/cxx/doxy/xml
+          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/archive/refs/tags/v0.1.2-alpha.1.tar.gz
+          tar xzf v0.1.2-alpha.1.tar.gz
+          cd OpenTraceCapture-0.1.2-alpha.1
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
           meson compile -C build
           meson install -C build
@@ -166,14 +156,9 @@ jobs:
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
-          cd /tmp/opentracecapture
-          sed -i 's|#include <enums.hpp>|#include "enums.hpp"|g' bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp
-          sed -i 's|#include <enums.cpp>|#include "enums.cpp"|g' bindings/cxx/classes.cpp
-          sed -i 's|^XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = bindings/cxx/doxy/xml|g' bindings/cxx/Doxyfile
-          sed -i 's|INPUT                  = ../../include/opentracecapture/libopentracecapture.h|INPUT                  = $(SRCDIR)../../include/opentracecapture/libopentracecapture.h|g' bindings/cxx/Doxyfile
-          sed -i 's|                         include/libopentracecapturecxx/libopentracecapturecxx.hpp|                         $(SRCDIR)include/libopentracecapturecxx/libopentracecapturecxx.hpp|g' bindings/cxx/Doxyfile
-          mkdir -p build/bindings/cxx/doxy/xml
+          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/archive/refs/tags/v0.1.2-alpha.1.tar.gz
+          tar xzf v0.1.2-alpha.1.tar.gz
+          cd OpenTraceCapture-0.1.2-alpha.1
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
           meson compile -C build
           meson install -C build
