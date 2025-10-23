@@ -82,11 +82,10 @@ jobs:
         run: |
           git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
           cd /tmp/opentracecapture
-          # Fix doxygen paths
+          # Fix doxygen output path - meson.build expects 'doxy/xml' not 'build/doxygen/xml'
           sed -i 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxy/xml|g' bindings/cxx/Doxyfile
-          sed -i 's|../../include/opentracecapture/libopentracecapture.h|../include/opentracecapture/libopentracecapture.h|g' bindings/cxx/Doxyfile
-          sed -i 's|include/libopentracecapturecxx/libopentracecapturecxx.hpp|../bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp|g' bindings/cxx/Doxyfile
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
+          # Create doxy/xml directory that doxygen expects
           mkdir -p build/doxy/xml
           meson compile -C build
           sudo meson install -C build
@@ -118,11 +117,10 @@ jobs:
         run: |
           git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
           cd /tmp/opentracecapture
-          # Fix doxygen paths
+          # Fix doxygen output path - meson.build expects 'doxy/xml' not 'build/doxygen/xml'
           sed -i '' 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxy/xml|g' bindings/cxx/Doxyfile
-          sed -i '' 's|../../include/opentracecapture/libopentracecapture.h|../include/opentracecapture/libopentracecapture.h|g' bindings/cxx/Doxyfile
-          sed -i '' 's|include/libopentracecapturecxx/libopentracecapturecxx.hpp|../bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp|g' bindings/cxx/Doxyfile
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
+          # Create doxy/xml directory that doxygen expects
           mkdir -p build/doxy/xml
           meson compile -C build
           meson install -C build
@@ -166,11 +164,10 @@ jobs:
         run: |
           git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
           cd /tmp/opentracecapture
-          # Fix doxygen paths
+          # Fix doxygen output path - meson.build expects 'doxy/xml' not 'build/doxygen/xml'
           sed -i 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxy/xml|g' bindings/cxx/Doxyfile
-          sed -i 's|../../include/opentracecapture/libopentracecapture.h|../include/opentracecapture/libopentracecapture.h|g' bindings/cxx/Doxyfile
-          sed -i 's|include/libopentracecapturecxx/libopentracecapturecxx.hpp|../bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp|g' bindings/cxx/Doxyfile
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
+          # Create doxy/xml directory that doxygen expects
           mkdir -p build/doxy/xml
           meson compile -C build
           meson install -C build
