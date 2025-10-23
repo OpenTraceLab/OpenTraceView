@@ -102,14 +102,11 @@ jobs:
           sudo tar xzf opentracecapture-linux.tar.gz -C /usr
           sudo ldconfig
 
-      - name: Build OpenTraceDecode (Linux)
+      - name: Install OpenTraceDecode (Linux)
         if: runner.os == 'Linux'
         run: |
-          git clone https://github.com/opentracelab/OpenTraceDecode.git /tmp/opentracedecode
-          cd /tmp/opentracedecode
-          meson setup build --buildtype=release
-          meson compile -C build
-          sudo meson install -C build
+          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/v0.1.0-alpha.1/opentracedecode-linux.tar.gz
+          sudo tar xzf opentracedecode-linux.tar.gz -C /usr
           sudo ldconfig
 
       - name: macOS deps
@@ -129,14 +126,11 @@ jobs:
           wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/${{ steps.otc-release.outputs.tag }}/opentracecapture-macos.tar.gz
           sudo tar xzf opentracecapture-macos.tar.gz -C /usr/local
 
-      - name: Build OpenTraceDecode (macOS)
+      - name: Install OpenTraceDecode (macOS)
         if: runner.os == 'macOS'
         run: |
-          git clone https://github.com/opentracelab/OpenTraceDecode.git /tmp/opentracedecode
-          cd /tmp/opentracedecode
-          meson setup build --buildtype=release
-          meson compile -C build
-          meson install -C build
+          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/v0.1.0-alpha.1/opentracedecode-macos.tar.gz
+          sudo tar xzf opentracedecode-macos.tar.gz -C /usr/local
 
       - name: MSYS2 setup
         if: runner.os == 'Windows'
@@ -169,15 +163,12 @@ jobs:
           wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/${{ steps.otc-release.outputs.tag }}/opentracecapture-windows.tar.gz
           tar xzf opentracecapture-windows.tar.gz -C /mingw64
 
-      - name: Build OpenTraceDecode (Windows)
+      - name: Install OpenTraceDecode (Windows)
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          git clone https://github.com/opentracelab/OpenTraceDecode.git /tmp/opentracedecode
-          cd /tmp/opentracedecode
-          meson setup build --buildtype=release
-          meson compile -C build
-          meson install -C build
+          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/v0.1.0-alpha.1/opentracedecode-windows.tar.gz
+          tar xzf opentracedecode-windows.tar.gz -C /mingw64
 
       - name: Build & test (Linux/macOS)
         if: runner.os != 'Windows'
