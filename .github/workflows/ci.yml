@@ -85,12 +85,14 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y meson ninja-build pkg-config gcc g++ ccache \
+          sudo apt-get install -y ninja-build pkg-config gcc g++ ccache python3-pip \
             libglib2.0-dev libglibmm-2.4-dev libusb-1.0-0-dev libzip-dev libftdi1-dev \
             libserialport-dev libhidapi-dev libieee1284-3-dev \
             qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-tools-dev \
             libboost-serialization-dev libboost-system-dev libboost-stacktrace-dev \
             doxygen
+          pip3 install --user meson
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
           echo "/usr/lib/ccache" >> "$GITHUB_PATH"
           echo "PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH" >> "$GITHUB_ENV"
           mkdir -p "$HOME/.cache/ccache" "$HOME/.cache/meson"
