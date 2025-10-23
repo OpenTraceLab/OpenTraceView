@@ -97,6 +97,7 @@ jobs:
           wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/${{ steps.otc-release.outputs.tag }}/opentracecapture-linux.tar.gz
           sudo tar xzf opentracecapture-linux.tar.gz -C /usr
           sudo ldconfig
+          echo "PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH" >> $GITHUB_ENV
 
       - name: Build OpenTraceDecode (Linux)
         if: runner.os == 'Linux'
@@ -124,6 +125,7 @@ jobs:
         run: |
           wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/${{ steps.otc-release.outputs.tag }}/opentracecapture-macos.tar.gz
           sudo tar xzf opentracecapture-macos.tar.gz -C /usr/local
+          echo "PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH" >> $GITHUB_ENV
 
       - name: Build OpenTraceDecode (macOS)
         if: runner.os == 'macOS'
