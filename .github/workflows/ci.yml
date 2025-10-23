@@ -40,7 +40,11 @@ jobs:
               owner: 'OpenTraceLab',
               repo: 'OpenTraceCapture'
             });
-            const latestTag = releases.data[0].tag_name;
+            // Sort by created_at descending to get most recent
+            const sortedReleases = releases.data.sort((a, b) => 
+              new Date(b.created_at) - new Date(a.created_at)
+            );
+            const latestTag = sortedReleases[0].tag_name;
             core.setOutput('tag', latestTag);
             core.info(`Using OpenTraceCapture ${latestTag}`);
 
