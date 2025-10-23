@@ -34,7 +34,7 @@ jobs:
       - name: Get latest OpenTraceCapture release
         id: otc-release
         run: |
-          LATEST_TAG=$(curl -s https://api.github.com/repos/OpenTraceLab/OpenTraceCapture/releases/latest | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+          LATEST_TAG=$(curl -s https://api.github.com/repos/OpenTraceLab/OpenTraceCapture/releases | jq -r '.[0].tag_name')
           echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
           echo "Using OpenTraceCapture $LATEST_TAG"
 
