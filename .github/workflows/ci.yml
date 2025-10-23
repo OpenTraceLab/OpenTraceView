@@ -84,6 +84,8 @@ jobs:
           cd /tmp/opentracecapture
           # Fix doxygen output path - meson.build expects 'doxy/xml' not 'build/doxygen/xml'
           sed -i 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxy/xml|g' bindings/cxx/Doxyfile
+          # Fix enums.hpp include to use relative path
+          sed -i 's|#include <enums.hpp>|#include "enums.hpp"|g' bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
           # Create doxy/xml directory that doxygen expects
           mkdir -p build/doxy/xml
@@ -119,6 +121,8 @@ jobs:
           cd /tmp/opentracecapture
           # Fix doxygen output path - meson.build expects 'doxy/xml' not 'build/doxygen/xml'
           sed -i '' 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxy/xml|g' bindings/cxx/Doxyfile
+          # Fix enums.hpp include to use relative path
+          sed -i '' 's|#include <enums.hpp>|#include "enums.hpp"|g' bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
           # Create doxy/xml directory that doxygen expects
           mkdir -p build/doxy/xml
@@ -166,6 +170,8 @@ jobs:
           cd /tmp/opentracecapture
           # Fix doxygen output path - meson.build expects 'doxy/xml' not 'build/doxygen/xml'
           sed -i 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxy/xml|g' bindings/cxx/Doxyfile
+          # Fix enums.hpp include to use relative path
+          sed -i 's|#include <enums.hpp>|#include "enums.hpp"|g' bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp
           CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
           # Create doxy/xml directory that doxygen expects
           mkdir -p build/doxy/xml
