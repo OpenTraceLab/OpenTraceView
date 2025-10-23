@@ -61,10 +61,11 @@ endif
 qt_modules = ['Core', 'Gui', 'Widgets', 'Svg']
 qt_deps = []
 foreach module : qt_modules
-  qt_deps += dependency('Qt6' + module, required: false)
-  if not qt_deps[-1].found()
-    qt_deps[-1] = dependency('qt6', modules: module)
+  dep = dependency('Qt6' + module, required: false)
+  if not dep.found()
+    dep = dependency('qt6', modules: module)
   endif
+  qt_deps += dep
 endforeach
 
 # LinguistTools is optional for translations
