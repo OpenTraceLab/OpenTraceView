@@ -81,7 +81,8 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/v0.1.2-alpha.4/opentracecapture-linux.tar.gz
-          sudo tar xzf opentracecapture-linux.tar.gz -C /
+          tar xzf opentracecapture-linux.tar.gz
+          sudo cp -r usr/* /usr/
           sudo ldconfig
 
       - name: Build OpenTraceDecode (Linux)
@@ -109,7 +110,8 @@ jobs:
         if: runner.os == 'macOS'
         run: |
           wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/v0.1.2-alpha.4/opentracecapture-macos.tar.gz
-          sudo tar xzf opentracecapture-macos.tar.gz -C /
+          tar xzf opentracecapture-macos.tar.gz
+          sudo cp -r usr/* /usr/local/
 
       - name: Build OpenTraceDecode (macOS)
         if: runner.os == 'macOS'
@@ -149,7 +151,8 @@ jobs:
         shell: msys2 {0}
         run: |
           wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/v0.1.2-alpha.4/opentracecapture-windows.tar.gz
-          tar xzf opentracecapture-windows.tar.gz -C /
+          tar xzf opentracecapture-windows.tar.gz
+          cp -r mingw64/* /mingw64/
 
       - name: Build OpenTraceDecode (Windows)
         if: runner.os == 'Windows'
