@@ -108,7 +108,7 @@ jobs:
       - name: Install OpenTraceDecode (Linux)
         if: runner.os == 'Linux'
         run: |
-          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/v0.1.0-alpha.1/opentracedecode-linux.tar.gz
+          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/v0.1.0-alpha.2/opentracedecode-linux.tar.gz
           sudo tar xzf opentracedecode-linux.tar.gz -C /usr
           sudo ldconfig
 
@@ -132,7 +132,7 @@ jobs:
       - name: Install OpenTraceDecode (macOS)
         if: runner.os == 'macOS'
         run: |
-          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/v0.1.0-alpha.1/opentracedecode-macos.tar.gz
+          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/v0.1.0-alpha.2/opentracedecode-macos.tar.gz
           sudo tar xzf opentracedecode-macos.tar.gz -C /usr/local
 
       - name: MSYS2 setup
@@ -170,7 +170,7 @@ jobs:
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/v0.1.0-alpha.1/opentracedecode-windows.tar.gz
+          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/v0.1.0-alpha.2/opentracedecode-windows.tar.gz
           tar xzf opentracedecode-windows.tar.gz -C /mingw64
 
       - name: Build & test (Linux/macOS)
