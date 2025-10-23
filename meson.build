@@ -61,7 +61,7 @@ endif
 qt_modules = ['Core', 'Gui', 'Widgets', 'Svg']
 qt_deps = []
 foreach module : qt_modules
-  dep = dependency('qt6' + module.to_lower(), required: false)
+  dep = dependency('Qt6' + module, method: 'cmake', required: false)
   if not dep.found()
     dep = dependency('qt6', modules: module)
   endif
