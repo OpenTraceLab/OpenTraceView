@@ -84,7 +84,7 @@ jobs:
           sudo apt-get install -y meson ninja-build pkg-config gcc g++ ccache \
             libglib2.0-dev libglibmm-2.4-dev libusb-1.0-0-dev libzip-dev libftdi1-dev \
             libserialport-dev libhidapi-dev libieee1284-3-dev \
-            qt6-base-dev libqt6svg6-dev qt6-tools-dev \
+            qt6-base-dev libqt6svg6-dev qt6-tools-dev qmake6 \
             libboost-serialization-dev libboost-system-dev libboost-stacktrace-dev \
             doxygen
           echo "/usr/lib/ccache" >> "$GITHUB_PATH"
