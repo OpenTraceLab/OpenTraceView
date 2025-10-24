@@ -61,7 +61,8 @@ jobs:
             libglib2.0-dev libglibmm-2.4-dev \
             qt6-base-dev libqt6svg6-dev \
             libgl-dev libglu1-mesa-dev \
-            libboost-serialization-dev libboost-system-dev
+            libboost-serialization-dev libboost-system-dev \
+            libusb-1.0-0-dev libzip-dev python3-dev
           pip3 install --user meson
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
