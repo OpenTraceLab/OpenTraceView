@@ -428,16 +428,21 @@ processed_files = qt6.preprocess(
 )
 
 # Handle conflicting MOC files with custom targets
-# Use the moc tool that meson's qt6 module found
-qt6_moc_tool = find_program('moc', 'moc-qt6', required: false)
+# Get the moc tool from Qt6 - it was already found by qt6.preprocess()
+# We need to find it the same way the qt6 module does
+qt6_moc_tool = find_program(
+  'moc-qt6',
+  'moc6', 
+  '/usr/lib/qt6/libexec/moc',
+  '/usr/local/lib/qt6/libexec/moc', 
+  '/opt/homebrew/share/qt/libexec/moc',
+  required: false
+)
 if not qt6_moc_tool.found()
-  # Fallback to common locations
-  qt6_moc_tool = find_program(
-    '/usr/lib/qt6/libexec/moc',
-    '/usr/local/lib/qt6/libexec/moc', 
-    '/opt/homebrew/share/qt/libexec/moc',
-    required: true
-  )
+  # Last resort: use qmake to find moc
+  qmake = find_program('qmake6', 'qmake-qt6', required: true)
+  qt6_bindir = run_command(qmake, '-query', 'QT_INSTALL_LIBEXECS', check: true).stdout().strip()
+  qt6_moc_tool = find_program(qt6_bindir / 'moc', required: true)
 endif
 
 # Data mathsignal
