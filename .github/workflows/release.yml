@@ -57,19 +57,20 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y ccache pkg-config gcc g++ \
-            libglib2.0-dev libglibmm-2.4-dev \
-            qt6-base-dev libqt6svg6-dev \
+          sudo apt-get install -y ninja-build pkg-config gcc g++ ccache python3-pip \
+            libglib2.0-dev libglibmm-2.4-dev libusb-1.0-0-dev libzip-dev libftdi1-dev \
+            libserialport-dev libhidapi-dev libieee1284-3-dev \
+            qt6-base-dev qt6-base-dev-tools libqt6svg6-dev qt6-tools-dev \
             libgl-dev libglu1-mesa-dev \
-            libboost-serialization-dev libboost-system-dev \
-            libusb-1.0-0-dev libzip-dev python3-dev
+            libboost-serialization-dev libboost-system-dev libboost-stacktrace-dev
           pip3 install --user meson
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: macOS deps
         if: runner.os == 'macOS'
         run: |
-          brew install meson ninja pkg-config ccache glib glibmm qt6 boost
+          brew install meson ninja pkg-config ccache glib glibmm libusb libzip libftdi \
+            hidapi libserialport qt6 boost
 
       - name: MSYS2 setup
         if: runner.os == 'Windows'
@@ -81,12 +82,16 @@ jobs:
             mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-meson
             mingw-w64-x86_64-ninja
-            mingw-w64-x86_64-pkg-config
             mingw-w64-x86_64-ccache
+            mingw-w64-x86_64-pkg-config
             mingw-w64-x86_64-glib2
             mingw-w64-x86_64-glibmm
-            mingw-w64-x86_64-qt6-base
-            mingw-w64-x86_64-qt6-svg
+            mingw-w64-x86_64-libusb
+            mingw-w64-x86_64-libzip
+            mingw-w64-x86_64-libftdi
+            mingw-w64-x86_64-libserialport
+            mingw-w64-x86_64-hidapi
+            mingw-w64-x86_64-qt6
             mingw-w64-x86_64-boost
 
       - name: Install OpenTraceCapture (Linux)
