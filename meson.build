@@ -48,6 +48,7 @@ endif
 qt6 = import('qt6')
 pkgconfig = import('pkgconfig')
 fs = import('fs')
+windows = import('windows')
 
 # Core dependencies
 glib_dep = dependency('glib-2.0', version: '>=2.28.0')
@@ -548,7 +549,7 @@ endif
 
 if host_machine.system() == 'windows'
   compile_args += ['-Wa,-mbig-obj', '-O3', '-DQT_STATICPLUGIN']
-  opentraceview_sources += files('opentraceviewico.rc')
+  opentraceview_sources += windows.compile_resources('opentraceviewico.rc')
 endif
 
 # Link flags
