@@ -23,9 +23,7 @@
 #include <QDebug>
 
 #include <libopentracecapturecxx.hpp>
-extern "C" {
 #include <opentracedecode/opentracedecode.h>
-}
 
 #include "decoder.hpp"
 

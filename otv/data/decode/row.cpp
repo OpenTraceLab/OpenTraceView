@@ -24,9 +24,7 @@
 #include "decoder.hpp"
 #include "row.hpp"
 
-extern "C" {
 #include <opentracedecode/opentracedecode.h>
-}
 
 namespace otv {
 namespace data {

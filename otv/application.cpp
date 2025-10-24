@@ -35,9 +35,7 @@
 #endif
 
 #ifdef ENABLE_DECODE
-extern "C" {
 #include <opentracedecode/opentracedecode.h>
-}
 #endif
 
 #include <otv/exprtk.hpp>

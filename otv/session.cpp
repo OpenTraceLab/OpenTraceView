@@ -63,9 +63,7 @@
 #endif
 
 #ifdef ENABLE_DECODE
-extern "C" {
 #include <opentracedecode/opentracedecode.h>
-}
 #include "data/decodesignal.hpp"
 #endif
 

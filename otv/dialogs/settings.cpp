@@ -52,9 +52,7 @@
 #include <libopentracecapturecxx.hpp>
 
 #ifdef ENABLE_DECODE
-extern "C" {
 #include <opentracedecode/opentracedecode.h>
-}
 #endif
 
 using otv::widgets::ColorButton;

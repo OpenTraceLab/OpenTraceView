@@ -27,9 +27,7 @@
 #include <QHash>
 #include <QString>
 
-extern "C" {
 #include <opentracedecode/opentracedecode.h>
-}
 
 #include <otv/data/decode/annotation.hpp>
 

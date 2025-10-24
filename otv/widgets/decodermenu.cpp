@@ -20,9 +20,7 @@
 
 #include <cassert>
 
-extern "C" {
 #include <opentracedecode/opentracedecode.h>
-}
 
 #include "decodermenu.hpp"
 

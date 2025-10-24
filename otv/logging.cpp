@@ -25,9 +25,7 @@
 #include <iostream>
 
 #ifdef ENABLE_DECODE
-extern "C" {
-#include <opentracedecode/opentracedecode.h>
-} /* First, so we avoid a _POSIX_C_SOURCE warning. */
+#include <opentracedecode/opentracedecode.h> /* First, so we avoid a _POSIX_C_SOURCE warning. */
 #endif
 
 #include <libopentracecapturecxx.hpp>

@@ -30,9 +30,7 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 
-extern "C" {
 #include <opentracedecode/opentracedecode.h>
-}
 
 #include "view.hpp"
 

@@ -29,9 +29,7 @@
 #include <QDebug>
 #include <QSettings>
 
-extern "C" {
 #include <opentracedecode/opentracedecode.h>
-}
 
 #include <otv/data/decode/decoder.hpp>
 #include <otv/data/decode/row.hpp>
