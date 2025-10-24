@@ -9,6 +9,7 @@ on:
       - ".github/workflows/**"
   push:
     branches: [main]
+    tags: ['v*']
     paths:
       - "otv/**"
       - "meson.build"
@@ -193,10 +194,17 @@ jobs:
       - name: Build & test (Linux/macOS)
         if: runner.os != 'Windows'
         run: |
-          meson setup build --buildtype=release
+          if [ "${{ runner.os }}" = "macOS" ]; then
+            PREFIX=/usr/local
+          else
+            PREFIX=/usr
+          fi
+          meson setup build --buildtype=release --prefix=$PREFIX
           meson configure build
           meson compile -C build
           meson test -C build --print-errorlogs
+          DESTDIR="${PWD}/install" meson install -C build
+          tar czf opentraceview-${{ runner.os == 'macOS' && 'macos' || 'linux' }}.tar.gz -C install$PREFIX .
 
       - name: Build & test (Windows)
         if: runner.os == 'Windows'
@@ -205,7 +213,36 @@ jobs:
           export CCACHE_DIR=/c/Users/runneradmin/.ccache
           export XDG_CACHE_HOME=/c/Users/runneradmin/AppData/Local
           mkdir -p "$CCACHE_DIR"
-          meson setup build --buildtype=release
+          meson setup build --buildtype=release --prefix=/mingw64
           meson configure build
           meson compile -C build
           meson test -C build --print-errorlogs
+          DESTDIR="${PWD}/install" meson install -C build
+          MINGW_PATH=$(find install -type d -name mingw64 | head -1)
+          tar czf opentraceview-windows.tar.gz -C $MINGW_PATH .
+
+      - name: Upload artifact
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: actions/upload-artifact@v4
+        with:
+          name: opentraceview-${{ runner.os == 'macOS' && 'macos' || runner.os == 'Windows' && 'windows' || 'linux' }}
+          path: opentraceview-*.tar.gz
+
+  release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: artifacts/*/opentraceview-*.tar.gz
+          draft: false
+          prerelease: true
