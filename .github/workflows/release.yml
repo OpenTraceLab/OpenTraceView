@@ -1,264 +1,174 @@
 name: Release
 
 on:
-  release:
-    types: [published]
-  workflow_dispatch:
-    inputs:
-      tag_name:
-        description: 'Tag to create/update (e.g. v0.1.0 or draft-<anything>)'
-        default: ""
-      draft:
-        description: 'Create as draft when manually run?'
-        type: boolean
-        default: true
-      prerelease:
-        description: 'Mark as prerelease when manually run?'
-        type: boolean
-        default: true
-
-permissions:
-  contents: write
-
-env:
-  APP: OpenTraceView
+  push:
+    tags:
+      - 'v*'
 
 jobs:
-  preflight:
-    runs-on: ubuntu-22.04
-    steps:
-      - run: |
-          echo "event=${{ github.event_name }}"
-          echo "ref=${{ github.ref }}"
-          echo "branch=${{ github.ref_name }}"
-          echo "tag_input='${{ inputs.tag_name }}'"
-          echo "actor=${{ github.actor }}"
-
-  build-and-upload:
+  build:
     strategy:
-      fail-fast: false
       matrix:
-        os: [ubuntu-22.04, windows-2022, macos-14]
+        include:
+          - os: ubuntu-22.04
+            name: linux
+          - os: macos-14
+            name: macos
+          - os: windows-2022
+            name: windows
     runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v4
 
-      # Linux cache
-      - name: Cache (Linux)
-        if: runner.os == 'Linux'
-        uses: actions/cache@v4
+      - name: Get latest OpenTraceCapture release
+        id: otc-release
+        uses: actions/github-script@v7
         with:
-          path: |
-            $HOME/.cache/ccache
-            $HOME/.cache/meson
-          key: linux-${{ hashFiles('**/meson.build','**/meson_options.txt') }}
-          restore-keys: linux-
+          script: |
+            const releases = await github.rest.repos.listReleases({
+              owner: 'OpenTraceLab',
+              repo: 'OpenTraceCapture'
+            });
+            const sortedReleases = releases.data.sort((a, b) => 
+              new Date(b.created_at) - new Date(a.created_at)
+            );
+            const latestTag = sortedReleases[0].tag_name;
+            core.setOutput('tag', latestTag);
+            core.info(`Using OpenTraceCapture ${latestTag}`);
 
-      # macOS cache
-      - name: Cache (macOS)
-        if: runner.os == 'macOS'
-        uses: actions/cache@v4
+      - name: Get latest OpenTraceDecode release
+        id: otd-release
+        uses: actions/github-script@v7
         with:
-          path: |
-            $HOME/.cache/ccache
-            $HOME/.cache/meson
-          key: mac-${{ hashFiles('**/meson.build','**/meson_options.txt') }}
-          restore-keys: mac-
-
-      # Windows cache
-      - name: Cache (Windows)
-        if: runner.os == 'Windows'
-        uses: actions/cache@v4
-        with:
-          path: |
-            C:\Users\runneradmin\.ccache
-            C:\Users\runneradmin\AppData\Local\meson
-          key: win-${{ hashFiles('**/meson.build','**/meson_options.txt') }}
-          restore-keys: win-
+          script: |
+            const releases = await github.rest.repos.listReleases({
+              owner: 'OpenTraceLab',
+              repo: 'OpenTraceDecode'
+            });
+            const sortedReleases = releases.data.sort((a, b) => 
+              new Date(b.created_at) - new Date(a.created_at)
+            );
+            const latestTag = sortedReleases[0].tag_name;
+            core.setOutput('tag', latestTag);
+            core.info(`Using OpenTraceDecode ${latestTag}`);
 
       - name: Linux deps
         if: runner.os == 'Linux'
         run: |
           sudo apt-get update
-          sudo apt-get install -y meson ninja-build pkg-config gcc g++ ccache \
-            libglib2.0-dev libglibmm-2.4-dev libusb-1.0-0-dev libzip-dev libftdi1-dev \
-            libserialport-dev libhidapi-dev libieee1284-3-dev \
-            qt6-base-dev libqt6svg6-dev qt6-tools-dev \
-            libboost-serialization-dev libboost-system-dev libboost-stacktrace-dev \
-            doxygen
-          echo "/usr/lib/ccache" >> "$GITHUB_PATH"
-          mkdir -p "$HOME/.cache/ccache" "$HOME/.cache/meson"
-
-      - name: Build OpenTraceCapture (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
-          cd /tmp/opentracecapture
-          sed -i 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxy/xml|g' bindings/cxx/Doxyfile
-          sed -i 's|../../include/opentracecapture/libopentracecapture.h|../include/opentracecapture/libopentracecapture.h|g' bindings/cxx/Doxyfile
-          sed -i 's|include/libopentracecapturecxx/libopentracecapturecxx.hpp|../bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp|g' bindings/cxx/Doxyfile
-          sed -i 's|#include <enums.hpp>|#include "enums.hpp"|g' bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp
-          sed -i 's|#include <enums.cpp>|#include "enums.cpp"|g' bindings/cxx/classes.cpp
-          CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
-          mkdir -p build/doxy/xml
-          meson compile -C build
-          sudo meson install -C build
-          sudo ldconfig
-
-      - name: Build OpenTraceDecode (Linux)
-        if: runner.os == 'Linux'
-        run: |
-          git clone https://github.com/opentracelab/OpenTraceDecode.git /tmp/opentracedecode
-          cd /tmp/opentracedecode
-          meson setup build --buildtype=release
-          meson compile -C build
-          sudo meson install -C build
-          sudo ldconfig
+          sudo apt-get install -y ccache pkg-config gcc g++ \
+            libglib2.0-dev libglibmm-2.4-dev \
+            qt6-base-dev libqt6svg6-dev \
+            libgl-dev libglu1-mesa-dev \
+            libboost-serialization-dev libboost-system-dev
+          pip3 install --user meson
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: macOS deps
         if: runner.os == 'macOS'
         run: |
-          brew update
-          brew install meson ninja pkg-config ccache glib glibmm libusb libzip libftdi \
-            hidapi libserialport qt6 boost doxygen
-          echo "$(brew --prefix ccache)/libexec" >> "$GITHUB_PATH"
-          echo "XDG_CACHE_HOME=$HOME/.cache"   >> "$GITHUB_ENV"
-          echo "CCACHE_DIR=$HOME/.cache/ccache" >> "$GITHUB_ENV"
-          mkdir -p "$HOME/.cache/ccache" "$HOME/.cache/meson"
+          brew install meson ninja pkg-config ccache glib glibmm qt6 boost
 
-      - name: Build OpenTraceCapture (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
-          cd /tmp/opentracecapture
-          sed -i '' 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxy/xml|g' bindings/cxx/Doxyfile
-          sed -i '' 's|../../include/opentracecapture/libopentracecapture.h|../include/opentracecapture/libopentracecapture.h|g' bindings/cxx/Doxyfile
-          sed -i '' 's|include/libopentracecapturecxx/libopentracecapturecxx.hpp|../bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp|g' bindings/cxx/Doxyfile
-          sed -i '' 's|#include <enums.hpp>|#include "enums.hpp"|g' bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp
-          sed -i '' 's|#include <enums.cpp>|#include "enums.cpp"|g' bindings/cxx/classes.cpp
-          CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
-          mkdir -p build/doxy/xml
-          meson compile -C build
-          meson install -C build
-
-      - name: Build OpenTraceDecode (macOS)
-        if: runner.os == 'macOS'
-        run: |
-          git clone https://github.com/opentracelab/OpenTraceDecode.git /tmp/opentracedecode
-          cd /tmp/opentracedecode
-          meson setup build --buildtype=release
-          meson compile -C build
-          meson install -C build
-
-      - name: MSYS2 setup (Windows)
+      - name: MSYS2 setup
         if: runner.os == 'Windows'
         uses: msys2/setup-msys2@v2
         with:
           msystem: MINGW64
           update: true
           install: >-
-            git
             mingw-w64-x86_64-toolchain
             mingw-w64-x86_64-meson
             mingw-w64-x86_64-ninja
-            mingw-w64-x86_64-ccache
             mingw-w64-x86_64-pkg-config
+            mingw-w64-x86_64-ccache
             mingw-w64-x86_64-glib2
             mingw-w64-x86_64-glibmm
-            mingw-w64-x86_64-libusb
-            mingw-w64-x86_64-libzip
-            mingw-w64-x86_64-libftdi
-            mingw-w64-x86_64-libserialport
-            mingw-w64-x86_64-hidapi
-            mingw-w64-x86_64-qt6
+            mingw-w64-x86_64-qt6-base
+            mingw-w64-x86_64-qt6-svg
             mingw-w64-x86_64-boost
-            mingw-w64-x86_64-doxygen
 
-      - name: Build OpenTraceCapture (Windows)
+      - name: Install OpenTraceCapture (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/${{ steps.otc-release.outputs.tag }}/opentracecapture-linux.tar.gz
+          sudo tar xzf opentracecapture-linux.tar.gz -C /usr
+
+      - name: Install OpenTraceDecode (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/${{ steps.otd-release.outputs.tag }}/opentracedecode-linux.tar.gz
+          sudo tar xzf opentracedecode-linux.tar.gz -C /usr
+
+      - name: Install OpenTraceCapture (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/${{ steps.otc-release.outputs.tag }}/opentracecapture-macos.tar.gz
+          sudo tar xzf opentracecapture-macos.tar.gz -C /usr/local
+
+      - name: Install OpenTraceDecode (macOS)
+        if: runner.os == 'macOS'
+        run: |
+          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/${{ steps.otd-release.outputs.tag }}/opentracedecode-macos.tar.gz
+          sudo tar xzf opentracedecode-macos.tar.gz -C /usr/local
+
+      - name: Install OpenTraceCapture (Windows)
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          git clone https://github.com/opentracelab/OpenTraceCapture.git /tmp/opentracecapture
-          cd /tmp/opentracecapture
-          sed -i 's|XML_OUTPUT = build/doxygen/xml|XML_OUTPUT = doxy/xml|g' bindings/cxx/Doxyfile
-          sed -i 's|../../include/opentracecapture/libopentracecapture.h|../include/opentracecapture/libopentracecapture.h|g' bindings/cxx/Doxyfile
-          sed -i 's|include/libopentracecapturecxx/libopentracecapturecxx.hpp|../bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp|g' bindings/cxx/Doxyfile
-          sed -i 's|#include <enums.hpp>|#include "enums.hpp"|g' bindings/cxx/include/libopentracecapturecxx/libopentracecapturecxx.hpp
-          sed -i 's|#include <enums.cpp>|#include "enums.cpp"|g' bindings/cxx/classes.cpp
-          CXXFLAGS="-std=c++17" meson setup build --buildtype=release -Dbindings_cxx=true
-          mkdir -p build/doxy/xml
-          meson compile -C build
-          meson install -C build
+          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/${{ steps.otc-release.outputs.tag }}/opentracecapture-windows.tar.gz
+          tar xzf opentracecapture-windows.tar.gz -C /mingw64
 
-      - name: Build OpenTraceDecode (Windows)
+      - name: Install OpenTraceDecode (Windows)
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          git clone https://github.com/opentracelab/OpenTraceDecode.git /tmp/opentracedecode
-          cd /tmp/opentracedecode
-          meson setup build --buildtype=release
-          meson compile -C build
-          meson install -C build
-
-      - name: Compute tag + version
-        id: meta
-        shell: bash
-        run: |
-          if [ "${{ github.event_name }}" = "release" ]; then
-            TAG="${{ github.event.release.tag_name }}"
-          else
-            TAG="${{ inputs.tag_name }}"
-            if [ -z "$TAG" ]; then TAG="draft-${GITHUB_RUN_ID}"; fi
-          fi
-          NUMVER="${TAG#v}"
-          echo "tag=$TAG"     >> $GITHUB_OUTPUT
-          echo "numver=$NUMVER" >> $GITHUB_OUTPUT
-          case "${{ runner.os }}" in
-            Linux)   OUT="${{ env.APP }}-${TAG}-linux.tar.gz" ;;
-            macOS)   OUT="${{ env.APP }}-${TAG}-macos.tar.gz" ;;
-            Windows) OUT="${{ env.APP }}-${TAG}-windows.zip" ;;
-          esac
-          echo "outfile=$OUT" >> $GITHUB_OUTPUT
+          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/${{ steps.otd-release.outputs.tag }}/opentracedecode-windows.tar.gz
+          tar xzf opentracedecode-windows.tar.gz -C /mingw64
 
       - name: Build (Linux/macOS)
         if: runner.os != 'Windows'
         run: |
-          meson setup build --buildtype=release \
-            -Dversion_override="${{ steps.meta.outputs.numver }}"
-          meson configure build
+          if [ "${{ runner.os }}" = "macOS" ]; then
+            PREFIX=/usr/local
+          else
+            PREFIX=/usr
+          fi
+          meson setup build --buildtype=release --prefix=$PREFIX
           meson compile -C build
-          meson install -C build --destdir "$PWD/pkg"
+          DESTDIR="${PWD}/install" meson install -C build
+          tar czf opentraceview-${{ matrix.name }}.tar.gz -C install$PREFIX .
 
       - name: Build (Windows)
         if: runner.os == 'Windows'
         shell: msys2 {0}
         run: |
-          export CCACHE_DIR=/c/Users/runneradmin/.ccache
-          export XDG_CACHE_HOME=/c/Users/runneradmin/AppData/Local
-          mkdir -p "$CCACHE_DIR"
-          export PATH=/mingw64/lib/ccache:$PATH
-          meson setup build --buildtype=release \
-            -Dversion_override="${{ steps.meta.outputs.numver }}"
-          meson configure build
+          meson setup build --buildtype=release --prefix=/mingw64
           meson compile -C build
-          meson install -C build --destdir "$PWD/pkg"
+          DESTDIR="${PWD}/install" meson install -C build
+          MINGW_PATH=$(find install -type d -name mingw64 | head -1)
+          tar czf opentraceview-${{ matrix.name }}.tar.gz -C $MINGW_PATH .
 
-      - name: Package (Linux/macOS)
-        if: runner.os != 'Windows'
-        run: tar -C pkg -czf "${{ steps.meta.outputs.outfile }}" .
-
-      - name: Package (Windows)
-        if: runner.os == 'Windows'
-        shell: bash
-        run: 7z a "${{ steps.meta.outputs.outfile }}" pkg\*
-
-      - name: Upload to Release
-        uses: softprops/action-gh-release@v2
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          files: ${{ steps.meta.outputs.outfile }}
-          tag_name: ${{ steps.meta.outputs.tag }}
-          name:     ${{ format('{0} {1}', env.APP, steps.meta.outputs.tag) }}
-          draft:    ${{ github.event_name == 'workflow_dispatch' && inputs.draft || false }}
-          prerelease: ${{ github.event_name == 'workflow_dispatch' && inputs.prerelease || false }}
-          target_commitish: ${{ github.sha }}
+          name: opentraceview-${{ matrix.name }}
+          path: opentraceview-${{ matrix.name }}.tar.gz
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: artifacts/*/opentraceview-*.tar.gz
+          draft: false
+          prerelease: true
