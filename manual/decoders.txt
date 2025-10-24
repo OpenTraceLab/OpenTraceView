@@ -37,7 +37,7 @@ OpenTraceView shows you the individual samples):
 image::otv_decoders_2.png[]
 
 This is already very useful, and a massive improvement over counting out pulses on an
-oscilloscope screen. However, sigrok allows us to go one step further with the use of
+oscilloscope screen. However, OpenTrace allows us to go one step further with the use of
 so-called stacked decoders. 
 
 === Decoder Stacking

@@ -28,11 +28,11 @@
 using std::shared_ptr;
 using std::string;
 
-namespace sigrok {
+namespace opentrace {
 class ConfigKey;
 class Device;
 class Session;
-} // namespace sigrok
+} // namespace opentrace
 
 namespace otv {
 

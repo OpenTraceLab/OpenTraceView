@@ -30,7 +30,7 @@
 using std::shared_ptr;
 using std::vector;
 
-namespace sigrok {
+namespace opentrace {
 class Context;
 class OutputFormat;
 }

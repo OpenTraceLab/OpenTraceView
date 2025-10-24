@@ -45,7 +45,7 @@ using std::thread;
 using std::mutex;
 using std::ofstream;
 
-namespace sigrok {
+namespace opentrace {
 class Output;
 class OutputFormat;
 }

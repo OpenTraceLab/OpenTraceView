@@ -42,7 +42,7 @@
 
 using std::shared_ptr;
 
-namespace sigrok {
+namespace opentrace {
 class Device;
 class InputFormat;
 class OutputFormat;

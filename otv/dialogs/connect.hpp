@@ -38,7 +38,7 @@
 
 using std::shared_ptr;
 
-namespace sigrok {
+namespace opentrace {
 class Driver;
 }
 

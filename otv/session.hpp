@@ -72,7 +72,7 @@ using Gst::Pipeline;
 struct otd_decoder;
 struct otd_channel;
 
-namespace sigrok {
+namespace opentrace {
 class Analog;
 class Channel;
 class Device;
@@ -83,7 +83,7 @@ class Option;
 class OutputFormat;
 class Packet;
 class Session;
-}  // namespace sigrok
+}  // namespace opentrace
 
 using opentrace::Option;
 

@@ -1,13 +1,13 @@
 == Data Import/Export
 
-In order to facilitate versatile use of the sigrok suite, libsigrok allows users to import
+In order to facilitate versatile use of the OpenTrace suite, OpenTraceCapture allows users to import
 and export data from files in various formats - some of them as generic as possible, others
-very specific. For a list and details, make sure to check https://sigrok.org/wiki/Input_output_formats[the wiki].
+very specific. For a list and details, make sure to check the upstream sigrok wiki.
 
 === Import
 
 The first step to importing data from a file is to know what format the data in the file is
-encoded in. There are common, not-so-common and outright exotic ways to represent data and sigrok
+encoded in. There are common, not-so-common and outright exotic ways to represent data and OpenTrace
 tries to suit as many needs as it can. To see which formats your version of OpenTraceView supports,
 just click on the small arrow next to the _Open_ button:
 

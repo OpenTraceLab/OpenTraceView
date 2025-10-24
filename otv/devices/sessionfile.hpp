@@ -27,7 +27,7 @@
 using std::shared_ptr;
 using std::string;
 
-namespace sigrok {
+namespace opentrace {
 class Context;
 } // sigrok
 

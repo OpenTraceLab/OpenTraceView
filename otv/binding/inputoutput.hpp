@@ -35,7 +35,7 @@ using std::shared_ptr;
 using std::string;
 using std::vector;
 
-namespace sigrok {
+namespace opentrace {
 class Option;
 }
 

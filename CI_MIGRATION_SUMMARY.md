@@ -24,12 +24,20 @@
 - ✅ Removed `manual/CMakeLists.txt`
 - ✅ Migration to Meson is now complete
 
-### 3. PulseView References Cleanup
+### 3. Branding Updates
 - ✅ Renamed `contrib/pulseview_cross.nsi.in` → `contrib/opentraceview_cross.nsi.in`
-- ✅ Updated `contrib/org.sigrok.OpenTraceView.appdata.xml`:
-  - Changed binary from `pulseview` to `opentraceview`
-  - Changed launchable from `org.sigrok.PulseView.desktop` to `org.sigrok.OpenTraceView.desktop`
+- ✅ Renamed `contrib/org.sigrok.OpenTraceView.desktop` → `contrib/org.opentrace.OpenTraceView.desktop`
+- ✅ Renamed `contrib/org.sigrok.OpenTraceView.appdata.xml` → `contrib/org.opentrace.OpenTraceView.appdata.xml`
+- ✅ Updated desktop file:
+  - Changed MIME type from `application/vnd.sigrok.session` to `application/vnd.opentrace.session`
+- ✅ Updated appdata.xml:
+  - Changed ID from `org.sigrok.OpenTraceView.desktop` to `org.opentrace.OpenTraceView.desktop`
+  - Changed launchable from `org.sigrok.OpenTraceView.desktop` to `org.opentrace.OpenTraceView.desktop`
+  - Changed MIME type from `application/vnd.sigrok.session` to `application/vnd.opentrace.session`
+  - Removed sigrok firmware dependencies
+  - Updated screenshot URLs
   - Updated URLs to GitHub OpenTraceLab organization
+- ✅ Replaced all `namespace sigrok` with `namespace opentrace` throughout codebase
 
 ## Build Status
 
@@ -109,8 +117,10 @@ meson test -C build --print-errorlogs
 
 - `.github/workflows/ci.yml` - Complete rewrite
 - `.github/workflows/build.yml` - Updated dependencies
-- `contrib/org.sigrok.OpenTraceView.appdata.xml` - Fixed references
+- `contrib/org.opentrace.OpenTraceView.desktop` - Renamed and updated MIME type
+- `contrib/org.opentrace.OpenTraceView.appdata.xml` - Renamed and updated references
 - `contrib/opentraceview_cross.nsi.in` - Renamed from pulseview_cross.nsi.in
+- All C++ source files - Replaced `namespace sigrok` with `namespace opentrace`
 
 ## Files Removed
 

@@ -109,6 +109,7 @@ deps = [glib_dep, glibmm_dep] + qt_deps + [libopentracecapture_dep, libopentrace
 
 if enable_flow
   deps += dependency('gstreamermm-1.0', version: '>=1.8.0')
+  # TODO: libsigrokflow is an external library not yet ported to OpenTrace
   deps += dependency('libsigrokflow', version: '>=0.1.0')
 endif
 
@@ -126,6 +127,7 @@ if enable_decode
 endif
 
 if host_machine.system() == 'android'
+  # NOTE: Android support removed - this dependency is no longer used
   deps += dependency('libsigrokandroidutils', version: '>=0.1.0')
 endif
 
@@ -584,9 +586,9 @@ exe = executable('opentraceview',
 
 # Installation
 install_man('doc/opentraceview.1')
-install_data('contrib/org.sigrok.OpenTraceView.desktop',
+install_data('contrib/org.opentrace.OpenTraceView.desktop',
   install_dir: get_option('datadir') / 'applications')
-install_data('contrib/org.sigrok.OpenTraceView.appdata.xml',
+install_data('contrib/org.opentrace.OpenTraceView.appdata.xml',
   install_dir: get_option('datadir') / 'metainfo')
 install_data('icons/opentraceview.png',
   install_dir: get_option('datadir') / 'icons/hicolor/48x48/apps')

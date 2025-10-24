@@ -48,7 +48,7 @@ using std::set;
 using std::shared_ptr;
 using std::vector;
 
-namespace sigrok {
+namespace opentrace {
 class ChannelGroup;
 }
 

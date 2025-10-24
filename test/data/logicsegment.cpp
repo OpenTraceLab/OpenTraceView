@@ -436,7 +436,7 @@ BOOST_AUTO_TEST_CASE(LongPulses)
 BOOST_AUTO_TEST_CASE(LisaMUsbHid)
 {
 	/* This test was created from the beginning of the USB_DM signal in
-	 * sigrok-dumps-usb/lisa_m_usbhid/lisa_m_usbhid.sr
+	 * a USB HID capture file
 	 */
 
 	const int Edges[] = {

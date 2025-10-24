@@ -36,7 +36,7 @@ using std::vector;
 class QIcon;
 class QToolBar;
 
-namespace sigrok {
+namespace opentrace {
 class TriggerMatchType;
 }
 

@@ -40,7 +40,7 @@ namespace Glib {
 class VariantBase;
 }
 
-namespace sigrok {
+namespace opentrace {
 class ConfigKey;
 class Context;
 class Driver;

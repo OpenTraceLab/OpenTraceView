@@ -11,13 +11,12 @@ Running
 gives you a list of these functions.
 
 Since OpenTraceView can't automatically scan for devices connected to a COM port (ttySx on Linux) or
-Ethernet, you can tell it to look for a specific device using the -d or --driver parameter. Its
-usage is the same as for sigrok-cli. For example:
+Ethernet, you can tell it to look for a specific device using the -d or --driver parameter. For example:
 
 	opentraceview -d lecroy-xstream:conn=vxi/192.168.178.20/111
 
-Also, just as with sigrok-cli, you can specify -i / --input-file and -I / --input-format to open
-a file on startup. Without -I, it is assumed that the file is in the native sigrok format (.sr).
+Also, you can specify -i / --input-file and -I / --input-format to open
+a file on startup. Without -I, it is assumed that the file is in the native OpenTrace format (.sr).
 You can also specify more than one file but they are all expected to be in the same format then.
 Example:
 
@@ -34,7 +33,7 @@ Example:
 The remaining parameters are mostly for debug purposes:
 
 	-V / --version		Shows the release version
-	-l / --loglevel		Sets the libsigrok/libsigrokdecode log level (max is 5)
+	-l / --loglevel		Sets the OpenTraceCapture/OpenTraceDecode log level (max is 5)
 	-D / --dont-scan	Don't auto-scan for devices
 	-c / --clean		Don't restore previous sessions on startup
 
