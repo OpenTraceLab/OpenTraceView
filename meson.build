@@ -47,6 +47,7 @@ endif
 # Dependencies
 qt6 = import('qt6')
 pkgconfig = import('pkgconfig')
+fs = import('fs')
 
 # Core dependencies
 glib_dep = dependency('glib-2.0', version: '>=2.28.0')
@@ -139,24 +140,29 @@ if enable_stacktrace
   endif
 endif
 
-# Try to find boost libraries using compiler
+# Boost dependencies - try dependency method first, fallback to find_library
 boost_deps = []
 foreach module : boost_modules
-  boost_lib = compiler.find_library('boost_' + module, required: false)
-  if boost_lib.found()
-    boost_deps += boost_lib
+  # Try using dependency() which handles platform naming
+  boost_dep = dependency('boost', modules: [module], required: false)
+  if boost_dep.found()
+    boost_deps += boost_dep
   else
-    # Try without boost_ prefix
-    boost_lib = compiler.find_library(module, required: false)
+    # Fallback to find_library with various naming conventions
+    boost_lib = compiler.find_library('boost_' + module, required: false)
     if boost_lib.found()
       boost_deps += boost_lib
     else
-      # Try with -mt suffix (MSYS2/MinGW)
-      boost_lib = compiler.find_library('boost_' + module + '-mt', required: false)
+      boost_lib = compiler.find_library(module, required: false)
       if boost_lib.found()
         boost_deps += boost_lib
       else
-        error('Boost library @0@ not found'.format(module))
+        boost_lib = compiler.find_library('boost_' + module + '-mt', required: false)
+        if boost_lib.found()
+          boost_deps += boost_lib
+        else
+          error('Boost library @0@ not found'.format(module))
+        endif
       endif
     endif
   endif
