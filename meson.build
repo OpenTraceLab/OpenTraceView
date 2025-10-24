@@ -86,9 +86,19 @@ libopentracecapturecxx_dep = dependency('libopentracecapturecxx', required: fals
 if not libopentracecapturecxx_dep.found()
   # Fallback: find library directly and use same glibmm as we have
   libopentracecapturecxx_lib = compiler.find_library('opentracecapturecxx', required: true)
+  
+  # Try to find the include directory
+  cxx_inc_dirs = []
+  foreach prefix : ['/usr/local', '/usr', '/opt/homebrew']
+    inc_dir = prefix / 'include' / 'libopentracecapturecxx'
+    if fs.is_dir(inc_dir)
+      cxx_inc_dirs += include_directories(inc_dir)
+    endif
+  endforeach
+  
   libopentracecapturecxx_dep = declare_dependency(
     dependencies: [libopentracecapturecxx_lib, glibmm_dep],
-    include_directories: include_directories('/usr/include/libopentracecapturecxx', '/usr/local/include/libopentracecapturecxx')
+    include_directories: cxx_inc_dirs
   )
 endif
 
@@ -142,8 +152,12 @@ foreach module : boost_modules
       boost_deps += boost_lib
     else
       # Try with -mt suffix (MSYS2/MinGW)
-      boost_lib = compiler.find_library('boost_' + module + '-mt', required: true)
-      boost_deps += boost_lib
+      boost_lib = compiler.find_library('boost_' + module + '-mt', required: false)
+      if boost_lib.found()
+        boost_deps += boost_lib
+      else
+        error('Boost library @0@ not found'.format(module))
+      endif
     endif
   endif
 endforeach
