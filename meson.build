@@ -428,7 +428,17 @@ processed_files = qt6.preprocess(
 )
 
 # Handle conflicting MOC files with custom targets
-qt6_moc_tool = find_program('/usr/lib/qt6/libexec/moc', required: true)
+# Use the moc tool that meson's qt6 module found
+qt6_moc_tool = find_program('moc', 'moc-qt6', required: false)
+if not qt6_moc_tool.found()
+  # Fallback to common locations
+  qt6_moc_tool = find_program(
+    '/usr/lib/qt6/libexec/moc',
+    '/usr/local/lib/qt6/libexec/moc', 
+    '/opt/homebrew/share/qt/libexec/moc',
+    required: true
+  )
+endif
 
 # Data mathsignal
 data_mathsignal_moc = custom_target('data_mathsignal_moc',
