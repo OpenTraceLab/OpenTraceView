@@ -81,8 +81,16 @@ linguist_dep = dependency('qt6', modules: 'LinguistTools', required: false)
 # libopentracecapture C API
 libopentracecapture_dep = dependency('opentracecapture')
 
-# libopentracecapture C++ bindings
-libopentracecapturecxx_dep = dependency('libopentracecapturecxx')
+# libopentracecapture C++ bindings - may fail if glibmm version mismatch
+libopentracecapturecxx_dep = dependency('libopentracecapturecxx', required: false)
+if not libopentracecapturecxx_dep.found()
+  # Fallback: find library directly and use same glibmm as we have
+  libopentracecapturecxx_lib = compiler.find_library('opentracecapturecxx', required: true)
+  libopentracecapturecxx_dep = declare_dependency(
+    dependencies: [libopentracecapturecxx_lib, glibmm_dep],
+    include_directories: include_directories('/usr/include/libopentracecapturecxx', '/usr/local/include/libopentracecapturecxx')
+  )
+endif
 
 # Optional dependencies
 deps = [glib_dep, glibmm_dep] + qt_deps + [libopentracecapture_dep, libopentracecapturecxx_dep]
@@ -129,8 +137,14 @@ foreach module : boost_modules
     boost_deps += boost_lib
   else
     # Try without boost_ prefix
-    boost_lib = compiler.find_library(module, required: true)
-    boost_deps += boost_lib
+    boost_lib = compiler.find_library(module, required: false)
+    if boost_lib.found()
+      boost_deps += boost_lib
+    else
+      # Try with -mt suffix (MSYS2/MinGW)
+      boost_lib = compiler.find_library('boost_' + module + '-mt', required: true)
+      boost_deps += boost_lib
+    endif
   endif
 endforeach
 deps += boost_deps
