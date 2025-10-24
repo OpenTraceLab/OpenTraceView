@@ -116,7 +116,16 @@ if enable_decode
   # Work around opentracedecode.pc requiring 'python' which doesn't exist on Ubuntu
   opentracedecode_dep = dependency('opentracedecode', version: '>=0.1.0', required: false)
   if not opentracedecode_dep.found()
-    opentracedecode_dep = compiler.find_library('opentracedecode', required: true)
+    # Try to find the library directly
+    opentracedecode_lib = compiler.find_library('opentracedecode', required: false)
+    if not opentracedecode_lib.found() and host_machine.system() == 'windows'
+      # On Windows, try with .dll suffix
+      opentracedecode_lib = compiler.find_library('libopentracedecode', required: false)
+    endif
+    if not opentracedecode_lib.found()
+      error('opentracedecode library not found')
+    endif
+    opentracedecode_dep = opentracedecode_lib
   endif
   deps += opentracedecode_dep
 endif
