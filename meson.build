@@ -127,6 +127,7 @@ if enable_decode
     endif
     opentracedecode_dep = opentracedecode_lib
   endif
+  message('OpenTraceDecode dependency type: @0@'.format(opentracedecode_dep))
   deps += opentracedecode_dep
 endif
 
