@@ -25,6 +25,18 @@ project('opentraceview', 'cpp',
   meson_version: '>=0.57.0'
 )
 
+# Auto-detect version from git tags (latest by date)
+git_version_cmd = run_command('git', 'describe', '--tags', '--abbrev=0', check: false)
+git_version_from_tag = git_version_cmd.returncode() == 0 ? git_version_cmd.stdout().strip() : ''
+
+# Version handling - priority: git tag > project version
+if git_version_from_tag != ''
+  # Remove 'v' prefix if present
+  otv_version = git_version_from_tag.startswith('v') ? git_version_from_tag.substring(1) : git_version_from_tag
+else
+  otv_version = meson.project_version()
+endif
+
 # Get compiler for library checks
 compiler = meson.get_compiler('cpp')
 
