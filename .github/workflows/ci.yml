@@ -171,9 +171,14 @@ jobs:
       - name: Install OpenTraceDecode (macOS)
         if: runner.os == 'macOS'
         run: |
-          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/${{ steps.otd-release.outputs.tag }}/opentracedecode-macos.tar.gz
+          echo "Downloading OpenTraceDecode from: https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/${{ steps.otd-release.outputs.tag }}/opentracedecode-macos.tar.gz"
+          wget https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/${{ steps.otd-release.outputs.tag }}/opentracedecode-macos.tar.gz
+          ls -lh opentracedecode-macos.tar.gz
           BREW_PREFIX=$(brew --prefix)
+          echo "Extracting to: $BREW_PREFIX"
           sudo tar xzf opentracedecode-macos.tar.gz -C $BREW_PREFIX
+          echo "Checking for OpenTraceDecode .pc file:"
+          find $BREW_PREFIX/lib/pkgconfig -name "*opentracedecode*.pc" -ls
 
       - name: MSYS2 setup
         if: runner.os == 'Windows'
