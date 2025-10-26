@@ -132,14 +132,14 @@ jobs:
       - name: Install OpenTraceCapture (Linux)
         if: runner.os == 'Linux'
         run: |
-          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/${{ steps.otc-release.outputs.tag }}/opentracecapture-linux.tar.gz
+          wget https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/${{ steps.otc-release.outputs.tag }}/opentracecapture-linux.tar.gz
           sudo tar xzf opentracecapture-linux.tar.gz -C /usr
           sudo ldconfig
 
       - name: Install OpenTraceDecode (Linux)
         if: runner.os == 'Linux'
         run: |
-          wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/${{ steps.otd-release.outputs.tag }}/opentracedecode-linux.tar.gz
+          wget https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/${{ steps.otd-release.outputs.tag }}/opentracedecode-linux.tar.gz
           sudo tar xzf opentracedecode-linux.tar.gz -C /usr
           sudo ldconfig
 
@@ -157,14 +157,16 @@ jobs:
       - name: Install OpenTraceCapture (macOS)
         if: runner.os == 'macOS'
         run: |
-          wget -q https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/${{ steps.otc-release.outputs.tag }}/opentracecapture-macos.tar.gz
-          sudo tar xzf opentracecapture-macos.tar.gz -C /usr/local
+          wget https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/${{ steps.otc-release.outputs.tag }}/opentracecapture-macos.tar.gz
+          BREW_PREFIX=$(brew --prefix)
+          sudo tar xzf opentracecapture-macos.tar.gz -C $BREW_PREFIX
 
       - name: Install OpenTraceDecode (macOS)
         if: runner.os == 'macOS'
         run: |
           wget -q https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/${{ steps.otd-release.outputs.tag }}/opentracedecode-macos.tar.gz
-          sudo tar xzf opentracedecode-macos.tar.gz -C /usr/local
+          BREW_PREFIX=$(brew --prefix)
+          sudo tar xzf opentracedecode-macos.tar.gz -C $BREW_PREFIX
 
       - name: MSYS2 setup
         if: runner.os == 'Windows'
