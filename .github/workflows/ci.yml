@@ -222,7 +222,7 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           if [ "${{ runner.os }}" = "macOS" ]; then
-            PREFIX=/usr/local
+            PREFIX=$(brew --prefix)
           else
             PREFIX=/usr
           fi
