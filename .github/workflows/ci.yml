@@ -157,9 +157,14 @@ jobs:
       - name: Install OpenTraceCapture (macOS)
         if: runner.os == 'macOS'
         run: |
+          echo "Downloading from: https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/${{ steps.otc-release.outputs.tag }}/opentracecapture-macos.tar.gz"
           wget https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/${{ steps.otc-release.outputs.tag }}/opentracecapture-macos.tar.gz
+          ls -lh opentracecapture-macos.tar.gz
           BREW_PREFIX=$(brew --prefix)
+          echo "Extracting to: $BREW_PREFIX"
           sudo tar xzf opentracecapture-macos.tar.gz -C $BREW_PREFIX
+          echo "Checking for .pc file:"
+          find $BREW_PREFIX -name "opentracecapture.pc" -ls
 
       - name: Install OpenTraceDecode (macOS)
         if: runner.os == 'macOS'
