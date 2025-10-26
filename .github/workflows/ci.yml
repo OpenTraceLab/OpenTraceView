@@ -133,14 +133,14 @@ jobs:
         if: runner.os == 'Linux'
         run: |
           wget https://github.com/OpenTraceLab/OpenTraceCapture/releases/download/${{ steps.otc-release.outputs.tag }}/opentracecapture-linux.tar.gz
-          sudo tar xzf opentracecapture-linux.tar.gz -C /usr
+          sudo tar xzf opentracecapture-linux.tar.gz -C /usr/local
           sudo ldconfig
 
       - name: Install OpenTraceDecode (Linux)
         if: runner.os == 'Linux'
         run: |
           wget https://github.com/OpenTraceLab/OpenTraceDecode/releases/download/${{ steps.otd-release.outputs.tag }}/opentracedecode-linux.tar.gz
-          sudo tar xzf opentracedecode-linux.tar.gz -C /usr
+          sudo tar xzf opentracedecode-linux.tar.gz -C /usr/local
           sudo ldconfig
 
       - name: macOS deps
